@@ -635,8 +635,12 @@ $("tMusik").onclick=()=>{
 document.addEventListener("visibilitychange",()=>{ if(!jalan) return; if(document.hidden) audio.pause(); else audio.play().catch(()=>{}); });
 
 /* ---------- buka undangan ---------- */
+if("scrollRestoration" in history) history.scrollRestoration="manual";
+const keAtas=()=>{ document.documentElement.scrollTop=0; document.body.scrollTop=0; window.scrollTo(0,0); };
+keAtas(); addEventListener("load",keAtas);
 document.body.style.overflow="hidden";
 $("bukaUndangan").onclick=()=>{
+  keAtas();
   $("cover").classList.add("buka"); document.body.style.overflow=""; putar(); $("tMusik").hidden=false;
   document.body.classList.add("siap");
   const io=new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add("terlihat"); io.unobserve(x.target); } }),{threshold:.15});
