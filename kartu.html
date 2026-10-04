@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Kartu Tamu · Zaki &amp; Anita</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath fill=%27%23d6243a%27 d=%27M12 21.4l-1.5-1.3C5.4 15.4 2 12.3 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 3.8-3.4 6.9-8.5 11.6L12 21.4z%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Halaman pembuat kartu tamu: ketik nama, kartu tergambar di canvas, lalu bagikan / unduh */
+:root{--bg:#111;--panel:#1c1c1c;--teks:#f2f2f2;--redup:#9a9a9a;--emas:#f2c94c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--teks);font-family:"Jost",system-ui,sans-serif}
+main{max-width:480px;margin:0 auto;padding:20px 16px 40px}
+h1{font-family:"Archivo",Arial,sans-serif;font-size:20px;margin:4px 0 4px}
+p.ket{color:var(--redup);font-size:14px;margin:0 0 16px;line-height:1.45}
+label{display:block;font-size:13px;color:var(--redup);margin-bottom:6px}
+input{width:100%;font:inherit;font-size:17px;padding:12px 14px;border-radius:10px;border:1px solid #333;background:var(--panel);color:var(--teks)}
+canvas{display:block;width:100%;height:auto;margin:16px 0;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+.tombol{display:grid;gap:10px}
+button{font:inherit;font-weight:600;font-size:16px;padding:13px;border-radius:999px;border:0;cursor:pointer}
+.utama{background:#25d366;color:#06240f}
+.kedua{background:#fff;color:#111}
+.ketiga{background:transparent;color:var(--teks);border:1px solid #444}
+#info{min-height:20px;font-size:13px;color:var(--redup);text-align:center;margin-top:10px}
+.link{word-break:break-all;font-size:13px;color:var(--redup);margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Kartu Undangan per Tamu</h1>
+  <p class="ket">Ketik nama tamu, lalu bagikan kartunya ke WhatsApp bersama link undangan. Nama tamu juga otomatis tertulis di undangannya.</p>
+  <label for="nama">Nama tamu</label>
+  <input id="nama" autocomplete="off" placeholder="contoh: Budi Santoso">
+  <canvas id="kartu" width="960" height="1240" aria-label="Pratinjau kartu undangan"></canvas>
+  <div class="tombol">
+    <button class="utama" id="bagikan" type="button">Bagikan ke WhatsApp</button>
+    <button class="kedua" id="unduh" type="button">Unduh gambar</button>
+    <button class="ketiga" id="salin" type="button">Salin link tamu</button>
+  </div>
+  <div class="link" id="link"></div>
+  <div id="info"></div>
+</main>
+
+<script>
+/* Data acara diambil dari undangan (index.html) supaya ikut berubah bila isinya diedit; ini cadangannya */
+let D={pw:"ZAKI & ANITA",tanggal:"Sabtu, 27 Maret 2027",jam:"08.00 - 11.00 WIB",tempat:"Masjid Al Azhom",alamat:"Jl. Satria Sudirman, Kota Tangerang, Banten"};
+const BASE=new URL("./",location.href).href;
+const $=id=>document.getElementById(id);
+const muat=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});
+let FOTO=null, LOGO=null;
+
+async function siapkan(){
+  try{
+    const s=await (await fetch(BASE+"index.html",{cache:"no-cache"})).text();
+    const m=s.match(/<script type="application\/json" id="isi">([\s\S]*?)<\/script>/);
+    if(m){ const d=JSON.parse(m[1]);
+      D={pw:`${d.pria.panggilan} & ${d.wanita.panggilan}`.toUpperCase(),tanggal:d.tanggalPanjang||D.tanggal,jam:d.akad||D.jam,tempat:d.tempat||D.tempat,alamat:d.alamat||D.alamat};
+      const f=(d.latar&&d.latar.sampul)||(d.foto&&d.foto.getting); if(f) FOTO=await muat(f);
+    }
+  }catch(e){}
+  if(!FOTO) FOTO=await muat(BASE+"og.jpg");
+  LOGO=await muat(BASE+"assets/hipo-plus.png");
+  try{ await Promise.all(["800 50px Archivo, Arial, sans-serif","700 30px Archivo, Arial, sans-serif","500 26px Jost, Arial, sans-serif","400 26px Jost, Arial, sans-serif"].map(f=>document.fonts.load(f))); }catch(e){}
+}
+
+/* nama tamu -> bagian link (#Budi-Santoso), sama aturannya dengan undangan */
+function slug(n){ return n.normalize("NFKC").replace(/[^\p{L}\p{N}\s-]/gu,"").trim().replace(/\s+/g,"-"); }
+function linkTamu(n){ const s=slug(n); return s? BASE+"#"+s : BASE; }
+
+function bungkus(ctx,teks,lebar){
+  const kata=teks.split(/\s+/), baris=[]; let b="";
+  for(const k of kata){ const c=b?b+" "+k:k; if(ctx.measureText(c).width>lebar&&b){ baris.push(b); b=k; } else b=c; }
+  if(b) baris.push(b); return baris;
+}
+function tutupi(ctx,img,x,y,w,h,fy=.3){ // object-fit:cover, fokus vertikal fy
+  const s=Math.max(w/img.width,h/img.height), sw=w/s, sh=h/s;
+  ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)*fy,sw,sh,x,y,w,h);
+}
+function logoPutih(ctx,x,y,h){
+  if(!LOGO) return 0;
+  const w=LOGO.width*h/LOGO.height, c=document.createElement("canvas"); c.width=Math.ceil(w); c.height=Math.ceil(h);
+  const g=c.getContext("2d"); g.drawImage(LOGO,0,0,w,h); g.globalCompositeOperation="source-in"; g.fillStyle="#fff"; g.fillRect(0,0,w,h);
+  ctx.drawImage(c,x,y); return w;
+}
+function kredit(ctx,cx,y,h){
+  ctx.font="400 22px Jost, Arial, sans-serif"; ctx.fillStyle="#dcdcdc"; ctx.textBaseline="middle";
+  const t="Made by", tw=ctx.measureText(t).width, lw=LOGO?LOGO.width*h/LOGO.height:0, gap=14, x=cx-(tw+gap+lw)/2;
+  ctx.textAlign="left"; ctx.fillText(t,x,y); logoPutih(ctx,x+tw+gap,y-h*.62,h); ctx.textBaseline="alphabetic";
+}
+
+/* kartu potret 960x1240 untuk dikirim sebagai gambar */
+function gambarKartu(nama){
+  const cv=$("kartu"), ctx=cv.getContext("2d"), W=960, H=1240, FH=600;
+  ctx.fillStyle="#000"; ctx.fillRect(0,0,W,H);
+  if(FOTO){ tutupi(ctx,FOTO,0,0,W,FH,.12); }
+  let g=ctx.createLinearGradient(0,FH*.35,0,FH); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,.85)");
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,FH);
+  ctx.textAlign="left"; ctx.fillStyle="#fff";
+  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("The Wedding Of",64,FH-110);
+  ctx.font="800 64px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,64,FH-40);
+
+  let y=FH+90; const X=64, L=W-128;
+  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#dcdcdc"; ctx.fillText("Dear",X,y); y+=56;
+  ctx.font="700 40px Archivo, Arial, sans-serif"; ctx.fillStyle="#fff";
+  for(const b of bungkus(ctx,nama||"Tamu Undangan",L).slice(0,2)){ ctx.fillText(b,X,y); y+=50; }
+  y+=40;
+  ctx.font="700 30px Archivo, Arial, sans-serif"; ctx.fillStyle="#f2c94c"; ctx.fillText("Akad Nikah",X,y); y+=50;
+  ctx.font="600 30px Jost, Arial, sans-serif"; ctx.fillStyle="#fff"; ctx.fillText(D.tanggal,X,y); y+=42;
+  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#e6e6e6"; ctx.fillText(D.jam,X,y); y+=60;
+  ctx.font="600 30px Jost, Arial, sans-serif"; ctx.fillStyle="#fff"; ctx.fillText(D.tempat,X,y); y+=42;
+  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#e6e6e6";
+  for(const b of bungkus(ctx,D.alamat,L).slice(0,3)){ ctx.fillText(b,X,y); y+=40; }
+  kredit(ctx,W/2,H-62,46);
+}
+
+/* gambar pratinjau link (og.jpg) 1200x630, dibuat sekali dengan ?og */
+function gambarOG(){
+  const cv=$("kartu"); cv.width=1200; cv.height=630; const ctx=cv.getContext("2d");
+  ctx.fillStyle="#000"; ctx.fillRect(0,0,1200,630);
+  if(FOTO){ tutupi(ctx,FOTO,0,0,520,630,.1); }
+  const g=ctx.createLinearGradient(380,0,520,0); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"#000"); ctx.fillStyle=g; ctx.fillRect(380,0,141,630);
+  const X=580; ctx.textAlign="left"; ctx.fillStyle="#fff";
+  ctx.font="400 32px Jost, Arial, sans-serif"; ctx.fillText("The Wedding Of",X,190);
+  ctx.font="800 66px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,X,270);
+  ctx.font="700 28px Archivo, Arial, sans-serif"; ctx.fillStyle="#f2c94c"; ctx.fillText("Akad Nikah",X,350);
+  ctx.font="600 30px Jost, Arial, sans-serif"; ctx.fillStyle="#fff"; ctx.fillText(D.tanggal,X,396);
+  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#e6e6e6"; ctx.fillText(D.tempat+", "+D.alamat.split(",").slice(-2,-1).join("").trim(),X,438);
+  kredit(ctx,X+230,560,40);
+}
+
+const blob=()=>new Promise(r=>$("kartu").toBlob(r,"image/jpeg",.92));
+const namaFile=()=>"undangan-"+(slug($("nama").value)||"tamu").toLowerCase()+".jpg";
+const pesan=n=>`Kepada Yth. ${n||"Bapak/Ibu/Saudara/i"}\n\nTanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir di acara pernikahan kami.\n\nInfo lengkap acara dan ucapan bisa dilihat di:\n${linkTamu(n)}\n\nTerima kasih,\nZaki & Anita`;
+function info(t){ $("info").textContent=t; }
+function perbarui(){ const n=$("nama").value.trim(); gambarKartu(n); $("link").textContent=linkTamu(n); }
+
+$("nama").addEventListener("input",perbarui);
+$("unduh").onclick=async()=>{ const b=await blob(), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=namaFile(); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); info("Gambar tersimpan. Kirim gambar ini lewat WhatsApp bersama link tamu."); };
+$("salin").onclick=async()=>{ try{ await navigator.clipboard.writeText(pesan($("nama").value.trim())); info("Pesan dan link tamu tersalin."); }catch(e){ info("Gagal menyalin, salin link di atas secara manual."); } };
+$("bagikan").onclick=async()=>{
+  const n=$("nama").value.trim(), f=new File([await blob()],namaFile(),{type:"image/jpeg"});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){
+    try{ await navigator.share({files:[f],text:pesan(n)}); }catch(e){}
+  }else{
+    $("unduh").onclick(); open("https://wa.me/?text="+encodeURIComponent(pesan(n)),"_blank");
+    info("Gambar sudah diunduh. Lampirkan gambarnya di chat WhatsApp yang terbuka.");
+  }
+};
+
+siapkan().then(()=>{
+  if(new URLSearchParams(location.search).has("og")){ gambarOG(); document.body.dataset.siap="og"; return; }
+  let h=""; try{ h=decodeURIComponent(location.hash.slice(1)); }catch(e){}
+  $("nama").value=h.replace(/[-_.~+]+/g," ").trim(); perbarui(); document.body.dataset.siap="1";
+});
+</script>
+</body>
+</html>
