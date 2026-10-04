@@ -21,7 +21,13 @@ label{display:block;font-size:13px;color:var(--redup);margin-bottom:6px}
 input{width:100%;font:inherit;font-size:17px;padding:12px 14px;border-radius:10px;border:1px solid #333;background:var(--panel);color:var(--teks)}
 select,textarea{width:100%;font:inherit;font-size:14px;padding:10px 12px;border-radius:10px;border:1px solid #333;background:var(--panel);color:var(--teks);margin-bottom:12px}
 textarea{line-height:1.45;resize:vertical}
-canvas{display:block;width:100%;height:auto;margin:16px 0;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+.kecil{font-size:13px;margin:-6px 0 10px}
+.foto-atur{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.foto-atur select{flex:1;margin:0}
+.foto-atur button{padding:9px 14px;font-size:14px;white-space:nowrap}
+.foto-atur .sebaris{margin:0;font-size:14px}
+.foto-atur input[type=range]{flex:1;padding:0;border:0;background:none;accent-color:#25d366}
+canvas{display:block;width:100%;height:auto;margin:16px 0;touch-action:none;cursor:grab;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
 .tombol{display:grid;gap:10px}
 button{font:inherit;font-weight:600;font-size:16px;padding:13px;border-radius:999px;border:0;cursor:pointer}
 .utama{background:#25d366;color:#06240f}
@@ -37,7 +43,18 @@ button{font:inherit;font-weight:600;font-size:16px;padding:13px;border-radius:99
   <p class="ket">Ketik nama tamu, lalu bagikan kartunya ke WhatsApp bersama link undangan. Nama tamu juga otomatis tertulis di undangannya.</p>
   <label for="nama">Nama tamu</label>
   <input id="nama" autocomplete="off" placeholder="contoh: Budi Santoso">
-  <canvas id="kartu" width="960" height="1240" aria-label="Pratinjau kartu undangan"></canvas>
+  <canvas id="kartu" width="1080" height="1080" aria-label="Pratinjau kartu undangan"></canvas>
+  <p class="ket kecil">Geser foto di kartu untuk mengatur posisinya, dan pakai Zoom supaya tidak terpotong.</p>
+  <div class="foto-atur">
+    <select id="pilihFoto" aria-label="Pilih foto"></select>
+    <button class="ketiga" id="unggah" type="button">Unggah foto</button>
+    <input type="file" id="fileFoto" accept="image/*" hidden>
+  </div>
+  <div class="foto-atur">
+    <label for="zoom" class="sebaris">Zoom</label>
+    <input type="range" id="zoom" min="0" max="1" step="0.001">
+    <button class="ketiga" id="resetFoto" type="button">Reset</button>
+  </div>
   <label for="versi">Teks broadcast</label>
   <select id="versi"><option value="0">Versi 1 (formal)</option><option value="1">Versi 2 (hangat)</option></select>
   <textarea id="pesan" rows="9" aria-label="Isi pesan broadcast"></textarea>
@@ -56,7 +73,14 @@ let D={pw:"ZAKI & ANITA",tanggal:"Sabtu, 27 Maret 2027",jam:"08.00 - 11.00 WIB",
 const BASE=new URL("./",location.href).href;
 const $=id=>document.getElementById(id);
 const muat=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src;});
-let FOTO=null, LOGO=null;
+let FOTO=null, LOGO=null, PILIHAN=[];
+const NAMA_FOTO={"latar.sampul":"Foto sampul","latar.lokasi":"Foto lokasi","latar.rsvp":"Foto RSVP","foto.getting":"Foto getting married","foto.kutip":"Foto kutipan","foto.strip1":"Foto strip 1","foto.strip2":"Foto strip 2","foto.strip3":"Foto strip 3","foto.film1":"Foto film 1","foto.film2":"Foto film 2","foto.sampul":"Foto kartu sampul"};
+/* posisi foto kartu disimpan di HP ini: {src, z (0 = muat utuh, 1 = zoom 3x dari penuh), ox, oy} */
+const SIMPAN="kartuFoto-v1", SIMPAN_UNGGAH="kartuFotoUnggah-v1";
+const AWAL={src:"latar.sampul",z:null,ox:.5,oy:.15};
+let P={...AWAL};
+try{ Object.assign(P,JSON.parse(localStorage.getItem(SIMPAN)||"{}")); }catch(e){}
+const simpanP=()=>{ try{ localStorage.setItem(SIMPAN,JSON.stringify(P)); }catch(e){} };
 
 async function siapkan(){
   try{
@@ -64,10 +88,16 @@ async function siapkan(){
     const m=s.match(/<script type="application\/json" id="isi">([\s\S]*?)<\/script>/);
     if(m){ const d=JSON.parse(m[1]);
       D={pw:`${d.pria.panggilan} & ${d.wanita.panggilan}`.toUpperCase(),tanggal:d.tanggalPanjang||D.tanggal,jam:d.akad||D.jam,tempat:d.tempat||D.tempat,alamat:d.alamat||D.alamat};
-      const f=(d.latar&&d.latar.sampul)||(d.foto&&d.foto.getting); if(f) FOTO=await muat(f);
+      for(const g of ["latar","foto"]) for(const [k,v] of Object.entries(d[g]||{})) if(typeof v==="string"&&v.startsWith("data:")&&NAMA_FOTO[g+"."+k]) PILIHAN.push({id:g+"."+k,nama:NAMA_FOTO[g+"."+k],src:v});
     }
   }catch(e){}
-  if(!FOTO) FOTO=await muat(BASE+"og.jpg");
+  try{ const u=localStorage.getItem(SIMPAN_UNGGAH); if(u) PILIHAN.push({id:"unggah",nama:"Foto unggahan",src:u}); }catch(e){}
+  if(!PILIHAN.length) PILIHAN.push({id:"og",nama:"Foto sampul",src:BASE+"og.jpg"});
+  $("pilihFoto").innerHTML=PILIHAN.map(x=>`<option value="${x.id}">${x.nama}</option>`).join("");
+  if(!PILIHAN.some(x=>x.id===P.src)) P={...AWAL,src:PILIHAN[0].id};
+  if(!PILIHAN.some(x=>x.id===P.src)) P.src=PILIHAN[0].id;
+  $("pilihFoto").value=P.src;
+  FOTO=await muat(PILIHAN.find(x=>x.id===P.src).src);
   LOGO=await muat(BASE+"assets/hipo-plus.png");
   try{ await Promise.all(["800 50px Archivo, Arial, sans-serif","700 30px Archivo, Arial, sans-serif","500 26px Jost, Arial, sans-serif","400 26px Jost, Arial, sans-serif"].map(f=>document.fonts.load(f))); }catch(e){}
 }
@@ -85,6 +115,21 @@ function tutupi(ctx,img,x,y,w,h,fy=.3){ // object-fit:cover, fokus vertikal fy
   const s=Math.max(w/img.width,h/img.height), sw=w/s, sh=h/s;
   ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)*fy,sw,sh,x,y,w,h);
 }
+/* skala foto: z=0 seluruh foto terlihat (bisa ada sisi kosong), z≈0.33 penuh menutup bingkai, z=1 zoom 3x */
+function skala(img,w,h,z){ const muatS=Math.min(w/img.width,h/img.height), tutupS=Math.max(w/img.width,h/img.height); return muatS*Math.pow(tutupS*3/muatS,z); }
+function zPenuh(img,w,h){ const a=Math.min(w/img.width,h/img.height), b=Math.max(w/img.width,h/img.height); return Math.log(b/a)/Math.log(b*3/a); }
+function gambarFoto(ctx,img,x,y,w,h){
+  if(P.z==null) P.z=zPenuh(img,w,h);
+  const s=skala(img,w,h,P.z), dw=img.width*s, dh=img.height*s;
+  ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
+  if(dw<w-1||dh<h-1){ // sisi kosong diisi versi foto yang buram & gelap
+    const t=Math.max(w/img.width,h/img.height); ctx.filter="blur(24px) brightness(.45)";
+    ctx.drawImage(img,x+(w-img.width*t)/2,y+(h-img.height*t)/2,img.width*t,img.height*t); ctx.filter="none";
+    ctx.fillStyle="rgba(0,0,0,.35)"; ctx.fillRect(x,y,w,h);
+  }
+  ctx.drawImage(img,x+(w-dw)*P.ox,y+(h-dh)*P.oy,dw,dh); ctx.restore();
+  return {dw,dh};
+}
 function logoPutih(ctx,x,y,h){
   if(!LOGO) return 0;
   const w=LOGO.width*h/LOGO.height, c=document.createElement("canvas"); c.width=Math.ceil(w); c.height=Math.ceil(h);
@@ -97,29 +142,31 @@ function kredit(ctx,cx,y,h){
   ctx.textAlign="left"; ctx.fillText(t,x,y); logoPutih(ctx,x+tw+gap,y-h*.62,h); ctx.textBaseline="alphabetic";
 }
 
-/* kartu potret 960x1240 untuk dikirim sebagai gambar */
+/* kartu kotak 1080x1080 untuk dikirim sebagai gambar */
+const KW=1080, KH=1080, FH=600;
+function teksMuat(ctx,teks,font,maks,lebar){ let u=maks; do{ ctx.font=font.replace("{}",u); u-=2; }while(ctx.measureText(teks).width>lebar&&u>20); }
 function gambarKartu(nama){
-  const cv=$("kartu"), ctx=cv.getContext("2d"), W=960, H=1240, FH=600;
+  const cv=$("kartu"), ctx=cv.getContext("2d"), W=KW, H=KH, X=64;
   ctx.fillStyle="#000"; ctx.fillRect(0,0,W,H);
-  if(FOTO){ tutupi(ctx,FOTO,0,0,W,FH,.12); }
-  let g=ctx.createLinearGradient(0,FH*.35,0,FH); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,.85)");
+  if(FOTO) gambarFoto(ctx,FOTO,0,0,W,FH);
+  const g=ctx.createLinearGradient(0,FH*.5,0,FH); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,.85)");
   ctx.fillStyle=g; ctx.fillRect(0,0,W,FH);
   ctx.textAlign="left"; ctx.fillStyle="#fff";
-  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("The Wedding Of",64,FH-110);
-  ctx.font="800 64px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,64,FH-40);
+  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("The Wedding Of",X,FH-100);
+  ctx.font="800 66px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,X,FH-32);
 
-  let y=FH+90; const X=64, L=W-128;
-  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#dcdcdc"; ctx.fillText("Dear",X,y); y+=56;
-  ctx.font="700 40px Archivo, Arial, sans-serif"; ctx.fillStyle="#fff";
-  for(const b of bungkus(ctx,nama||"Tamu Undangan",L).slice(0,2)){ ctx.fillText(b,X,y); y+=50; }
-  y+=40;
-  ctx.font="700 30px Archivo, Arial, sans-serif"; ctx.fillStyle="#f2c94c"; ctx.fillText("Akad Nikah",X,y); y+=50;
-  ctx.font="600 30px Jost, Arial, sans-serif"; ctx.fillStyle="#fff"; ctx.fillText(D.tanggal,X,y); y+=42;
-  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#e6e6e6"; ctx.fillText(D.jam,X,y); y+=60;
-  ctx.font="600 30px Jost, Arial, sans-serif"; ctx.fillStyle="#fff"; ctx.fillText(D.tempat,X,y); y+=42;
-  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#e6e6e6";
-  for(const b of bungkus(ctx,D.alamat,L).slice(0,3)){ ctx.fillText(b,X,y); y+=40; }
-  kredit(ctx,W/2,H-62,46);
+  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#cfcfcf"; ctx.fillText("Dear",X,FH+70);
+  ctx.fillStyle="#fff"; teksMuat(ctx,nama||"Tamu Undangan","700 {}px Archivo, Arial, sans-serif",44,W-2*X); ctx.fillText(nama||"Tamu Undangan",X,FH+124);
+  ctx.fillStyle="#333"; ctx.fillRect(X,FH+162,W-2*X,2);
+
+  const Y=FH+222, X2=W/2+20, L2=W-X2-X;
+  ctx.font="700 28px Archivo, Arial, sans-serif"; ctx.fillStyle="#f2c94c"; ctx.fillText("Akad Nikah",X,Y); ctx.fillText("Lokasi",X2,Y);
+  ctx.fillStyle="#fff"; teksMuat(ctx,D.tanggal,"600 {}px Jost, Arial, sans-serif",30,X2-X-30); ctx.fillText(D.tanggal,X,Y+48);
+  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#e6e6e6"; ctx.fillText(D.jam,X,Y+88);
+  ctx.fillStyle="#fff"; teksMuat(ctx,D.tempat,"600 {}px Jost, Arial, sans-serif",30,L2); ctx.fillText(D.tempat,X2,Y+48);
+  ctx.font="400 26px Jost, Arial, sans-serif"; ctx.fillStyle="#e6e6e6";
+  bungkus(ctx,D.alamat,L2).slice(0,2).forEach((b,i)=>ctx.fillText(b,X2,Y+88+i*36));
+  kredit(ctx,W/2,H-52,44);
 }
 
 /* gambar pratinjau link (og.jpg) 1200x630, dibuat sekali dengan ?og */
@@ -189,6 +236,35 @@ function perbarui(){ const n=$("nama").value.trim(); gambarKartu(n); FILE=null; 
 $("versi").addEventListener("change",perbarui);
 
 $("nama").addEventListener("input",perbarui);
+
+/* ---- atur foto: geser di kartu, zoom, ganti, unggah ---- */
+function aturZoom(){ $("zoom").value=P.z; }
+$("zoom").addEventListener("input",e=>{ P.z=+e.target.value; gambarKartu($("nama").value.trim()); });
+$("zoom").addEventListener("change",()=>{ simpanP(); perbarui(); });
+$("resetFoto").onclick=()=>{ P={...AWAL,src:P.src}; P.z=null; perbarui(); aturZoom(); simpanP(); };
+$("pilihFoto").onchange=async e=>{ const x=PILIHAN.find(v=>v.id===e.target.value); FOTO=await muat(x.src); P={...AWAL,src:x.id}; perbarui(); aturZoom(); simpanP(); };
+$("unggah").onclick=()=>$("fileFoto").click();
+$("fileFoto").onchange=async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const img=await muat(URL.createObjectURL(f)); if(!img){ info("Foto tidak bisa dibuka."); return; }
+  const m=Math.min(1,1600/Math.max(img.width,img.height)), c=document.createElement("canvas");
+  c.width=Math.round(img.width*m); c.height=Math.round(img.height*m); c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  const src=c.toDataURL("image/jpeg",.88);
+  try{ localStorage.setItem(SIMPAN_UNGGAH,src); }catch(e){}
+  PILIHAN=PILIHAN.filter(v=>v.id!=="unggah"); PILIHAN.push({id:"unggah",nama:"Foto unggahan",src});
+  $("pilihFoto").innerHTML=PILIHAN.map(x=>`<option value="${x.id}">${x.nama}</option>`).join(""); $("pilihFoto").value="unggah";
+  FOTO=await muat(src); P={...AWAL,src:"unggah"}; perbarui(); aturZoom(); simpanP(); e.target.value="";
+};
+(()=>{ const cv=$("kartu"); let tarik=null;
+  const titik=e=>{ const r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height}; };
+  cv.addEventListener("pointerdown",e=>{ if(!FOTO) return; const t=titik(e); if(t.y>FH) return; tarik=t; cv.setPointerCapture(e.pointerId); cv.style.cursor="grabbing"; });
+  cv.addEventListener("pointermove",e=>{ if(!tarik) return; const t=titik(e), s=skala(FOTO,KW,FH,P.z), dw=FOTO.width*s, dh=FOTO.height*s;
+    if(Math.abs(KW-dw)>1) P.ox=Math.min(1,Math.max(0,P.ox+(t.x-tarik.x)/(KW-dw)));
+    if(Math.abs(FH-dh)>1) P.oy=Math.min(1,Math.max(0,P.oy+(t.y-tarik.y)/(FH-dh)));
+    tarik=t; gambarKartu($("nama").value.trim()); });
+  const lepas=()=>{ if(!tarik) return; tarik=null; cv.style.cursor=""; simpanP(); perbarui(); };
+  cv.addEventListener("pointerup",lepas); cv.addEventListener("pointercancel",lepas);
+})();
 $("unduh").onclick=async()=>{ const b=await blob(), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=namaFile(); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); info("Gambar tersimpan. Kirim gambar ini lewat WhatsApp bersama link tamu."); };
 $("salin").onclick=async()=>{ try{ await navigator.clipboard.writeText($("pesan").value); info("Pesan broadcast dan link tamu tersalin."); }catch(e){ info("Gagal menyalin, salin link di atas secara manual."); } };
 $("bagikan").onclick=async()=>{
@@ -205,7 +281,7 @@ $("bagikan").onclick=async()=>{
 siapkan().then(()=>{
   if(new URLSearchParams(location.search).has("og")){ gambarOG(); document.body.dataset.siap="og"; return; }
   let h=""; try{ h=decodeURIComponent(location.hash.slice(1)); }catch(e){}
-  $("nama").value=h.replace(/[-_.~+]+/g," ").trim(); perbarui(); document.body.dataset.siap="1";
+  $("nama").value=h.replace(/[-_.~+]+/g," ").trim(); perbarui(); aturZoom(); document.body.dataset.siap="1";
 });
 </script>
 </body>
