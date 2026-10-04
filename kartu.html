@@ -19,6 +19,8 @@ h1{font-family:"Archivo",Arial,sans-serif;font-size:20px;margin:4px 0 4px}
 p.ket{color:var(--redup);font-size:14px;margin:0 0 16px;line-height:1.45}
 label{display:block;font-size:13px;color:var(--redup);margin-bottom:6px}
 input{width:100%;font:inherit;font-size:17px;padding:12px 14px;border-radius:10px;border:1px solid #333;background:var(--panel);color:var(--teks)}
+select,textarea{width:100%;font:inherit;font-size:14px;padding:10px 12px;border-radius:10px;border:1px solid #333;background:var(--panel);color:var(--teks);margin-bottom:12px}
+textarea{line-height:1.45;resize:vertical}
 canvas{display:block;width:100%;height:auto;margin:16px 0;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
 .tombol{display:grid;gap:10px}
 button{font:inherit;font-weight:600;font-size:16px;padding:13px;border-radius:999px;border:0;cursor:pointer}
@@ -36,10 +38,13 @@ button{font:inherit;font-weight:600;font-size:16px;padding:13px;border-radius:99
   <label for="nama">Nama tamu</label>
   <input id="nama" autocomplete="off" placeholder="contoh: Budi Santoso">
   <canvas id="kartu" width="960" height="1240" aria-label="Pratinjau kartu undangan"></canvas>
+  <label for="versi">Teks broadcast</label>
+  <select id="versi"><option value="0">Versi 1 (formal)</option><option value="1">Versi 2 (hangat)</option></select>
+  <textarea id="pesan" rows="9" aria-label="Isi pesan broadcast"></textarea>
   <div class="tombol">
     <button class="utama" id="bagikan" type="button">Bagikan ke WhatsApp</button>
     <button class="kedua" id="unduh" type="button">Unduh gambar</button>
-    <button class="ketiga" id="salin" type="button">Salin link tamu</button>
+    <button class="ketiga" id="salin" type="button">Salin pesan</button>
   </div>
   <div class="link" id="link"></div>
   <div id="info"></div>
@@ -134,19 +139,65 @@ function gambarOG(){
 
 const blob=()=>new Promise(r=>$("kartu").toBlob(r,"image/jpeg",.92));
 const namaFile=()=>"undangan-"+(slug($("nama").value)||"tamu").toLowerCase()+".jpg";
-const pesan=n=>`Kepada Yth. ${n||"Bapak/Ibu/Saudara/i"}\n\nTanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir di acara pernikahan kami.\n\nInfo lengkap acara dan ucapan bisa dilihat di:\n${linkTamu(n)}\n\nTerima kasih,\nZaki & Anita`;
+const TEKS=[
+`Yth.
+Bapak/Ibu/Saudara/i
+*{NAMA}*
+di Tempat
+
+Bismillahirrahmanirrahim
+
+Tanpa mengurangi rasa hormat, dengan penuh rasa syukur kepada Allah SWT, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu dalam acara pernikahan kami:
+
+*FIRDIAN ZAKI PUTRA WIBOWO & ANITA NURUL SYAHRUDIN*
+
+Informasi lengkap dari acara bisa dikunjungi melalui link undangan di bawah ini:
+{LINK}
+
+Kehadiran dan doa restu dari Bapak/Ibu/Saudara/i merupakan kehormatan dan kebahagiaan bagi kami.
+
+Kami yang berbahagia,
+*ZAKI & ANITA*
+
+Mohon maaf apabila ada salah dalam penulisan nama.`,
+`Assalamu'alaikum Warahmatullahi Wabarakatuh
+
+Kepada Yth.
+*{NAMA}*
+
+Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud berbagi kabar bahagia. Insya Allah kami akan melangsungkan akad nikah pada:
+
+🗓 {TANGGAL}
+🕗 {JAM}
+📍 {TEMPAT}
+
+Kami mengundang Bapak/Ibu/Saudara/i untuk turut hadir dan mendoakan langkah baru kami. Detail acara, lokasi, dan ucapan dapat dibuka melalui undangan digital berikut:
+
+👉 {LINK}
+
+Merupakan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir atau menitipkan doa restu.
+
+Wassalamu'alaikum Warahmatullahi Wabarakatuh
+
+Kami yang berbahagia,
+*Zaki & Anita*
+beserta keluarga`];
+const pesan=n=>TEKS[+$("versi").value].replace(/\{NAMA\}/g,n||"Bapak/Ibu/Saudara/i").replace(/\{LINK\}/g,linkTamu(n)).replace(/\{TANGGAL\}/g,D.tanggal).replace(/\{JAM\}/g,D.jam).replace(/\{TEMPAT\}/g,D.tempat+", "+(D.alamat.split(",").slice(-2,-1)[0]||"").trim());
 function info(t){ $("info").textContent=t; }
-function perbarui(){ const n=$("nama").value.trim(); gambarKartu(n); $("link").textContent=linkTamu(n); }
+let FILE=null, jedaFile;
+function perbarui(){ const n=$("nama").value.trim(); gambarKartu(n); FILE=null; clearTimeout(jedaFile); jedaFile=setTimeout(async()=>{ FILE=new File([await blob()],namaFile(),{type:"image/jpeg"}); },250); $("link").textContent=linkTamu(n); $("pesan").value=pesan(n); }
+$("versi").addEventListener("change",perbarui);
 
 $("nama").addEventListener("input",perbarui);
 $("unduh").onclick=async()=>{ const b=await blob(), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=namaFile(); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); info("Gambar tersimpan. Kirim gambar ini lewat WhatsApp bersama link tamu."); };
-$("salin").onclick=async()=>{ try{ await navigator.clipboard.writeText(pesan($("nama").value.trim())); info("Pesan dan link tamu tersalin."); }catch(e){ info("Gagal menyalin, salin link di atas secara manual."); } };
+$("salin").onclick=async()=>{ try{ await navigator.clipboard.writeText($("pesan").value); info("Pesan broadcast dan link tamu tersalin."); }catch(e){ info("Gagal menyalin, salin link di atas secara manual."); } };
 $("bagikan").onclick=async()=>{
-  const n=$("nama").value.trim(), f=new File([await blob()],namaFile(),{type:"image/jpeg"});
-  if(navigator.canShare&&navigator.canShare({files:[f]})){
-    try{ await navigator.share({files:[f],text:pesan(n)}); }catch(e){}
+  // file disiapkan lebih dulu (FILE) agar share dipanggil langsung saat tombol ditekan; Safari menolak share yang tertunda
+  const teks=$("pesan").value, f=FILE||new File([await blob()],namaFile(),{type:"image/jpeg"});
+  if(navigator.canShare&&navigator.canShare({files:[f],text:teks})){
+    try{ await navigator.share({files:[f],text:teks}); info("Kalau teks broadcast tidak ikut, tekan Salin pesan lalu tempel di WhatsApp."); }catch(e){}
   }else{
-    $("unduh").onclick(); open("https://wa.me/?text="+encodeURIComponent(pesan(n)),"_blank");
+    $("unduh").onclick(); open("https://wa.me/?text="+encodeURIComponent(teks),"_blank");
     info("Gambar sudah diunduh. Lampirkan gambarnya di chat WhatsApp yang terbuka.");
   }
 };
