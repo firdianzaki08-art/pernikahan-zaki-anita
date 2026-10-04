@@ -268,13 +268,18 @@ $("fileFoto").onchange=async e=>{
 $("unduh").onclick=async()=>{ const b=await blob(), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=namaFile(); a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); info("Gambar tersimpan. Kirim gambar ini lewat WhatsApp bersama link tamu."); };
 $("salin").onclick=async()=>{ try{ await navigator.clipboard.writeText($("pesan").value); info("Pesan broadcast dan link tamu tersalin."); }catch(e){ info("Gagal menyalin, salin link di atas secara manual."); } };
 $("bagikan").onclick=async()=>{
-  // file disiapkan lebih dulu (FILE) agar share dipanggil langsung saat tombol ditekan; Safari menolak share yang tertunda
-  const teks=$("pesan").value, f=FILE||new File([await blob()],namaFile(),{type:"image/jpeg"});
-  if(navigator.canShare&&navigator.canShare({files:[f],text:teks})){
-    try{ await navigator.share({files:[f],text:teks}); info("Kalau teks broadcast tidak ikut, tekan Salin pesan lalu tempel di WhatsApp."); }catch(e){}
+  // Teks broadcast dikirim sebagai keterangan gambar. Sebagian WhatsApp (terutama iPhone) membuang teks bila ada gambar,
+  // jadi teks juga disalin ke clipboard sebagai cadangan. Clipboard & share dipanggil langsung tanpa jeda agar diizinkan browser.
+  const teks=$("pesan").value;
+  if(!FILE) FILE=new File([await blob()],namaFile(),{type:"image/jpeg"});
+  try{ navigator.clipboard.writeText(teks).catch(()=>{}); }catch(e){}
+  const data={files:[FILE],text:teks};
+  if(navigator.canShare&&navigator.canShare(data)){
+    try{ await navigator.share(data); info("Terkirim. Kalau teksnya tidak muncul di bawah gambar, tekan lama kolom keterangan di WhatsApp lalu pilih Tempel (teks sudah tersalin)."); }
+    catch(e){ if(e.name!=="AbortError") info("Gagal membagikan, coba Unduh gambar lalu Salin pesan."); }
   }else{
     $("unduh").onclick(); open("https://wa.me/?text="+encodeURIComponent(teks),"_blank");
-    info("Gambar sudah diunduh. Lampirkan gambarnya di chat WhatsApp yang terbuka.");
+    info("Teks broadcast sudah masuk di WhatsApp yang terbuka. Lampirkan gambar kartu yang barusan terunduh.");
   }
 };
 
