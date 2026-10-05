@@ -62,10 +62,10 @@ section{position:relative;overflow:hidden}
 .swag svg{width:100%;height:100%}
 .panggung .karpet{height:15%}
 .judul-buka{z-index:3;text-align:center;transition:opacity .8s,transform .8s}
-.judul-buka .were{font-size:52px;line-height:.9;color:#fff;margin-left:20px}
-.judul-buka .gm{font-family:var(--f-caps);font-size:30px;letter-spacing:.06em;color:#fff;line-height:1;margin-top:4px}
-.judul-buka .gm .g{font-family:var(--f-script);font-size:46px;letter-spacing:0;margin-right:-4px;vertical-align:-4px}
-.judul-buka .nama{font-size:50px;color:#fff;line-height:1.25;margin-top:4px}
+.judul-buka .were{font-size:44px;line-height:.9;color:#fff;margin-left:24px}
+.judul-buka .gm{font-family:var(--f-caps);font-size:25px;letter-spacing:.07em;color:#fff;line-height:1;margin-top:4px}
+.judul-buka .gm .g{font-family:var(--f-script);font-size:40px;letter-spacing:0;margin-right:-4px;vertical-align:-4px}
+.judul-buka .nama{font-size:44px;color:#fff;line-height:1.25;margin-top:6px}
 .buka .judul-buka{opacity:0;transform:translateY(-20px);pointer-events:none}
 
 /* amplop */
@@ -119,7 +119,7 @@ section{position:relative;overflow:hidden}
 .cermin{transform:scaleX(-1)}
 .b-sudut,.b-kecil{transition:top 1.2s cubic-bezier(.6,0,.3,1),right 1.2s,width 1.2s}
 .b-lantai{transition:opacity .8s}
-.buka .b-sudut{top:24%!important}
+.buka .b-sudut{top:23%!important;left:-3%!important;width:36%!important}
 .buka .b-kecil{top:63%!important;right:6%!important;width:30%!important}
 .buka .b-lantai{opacity:0}
 .goyang{animation:goyang 6s ease-in-out infinite;transform-origin:50% 0}
@@ -533,12 +533,12 @@ function rangkai(jenis,seed){
   const pick=a=>a[Math.floor(r()*a.length)];
   let bawah="", atas="";
   // bulu pampas: beberapa gumpalan berbulu halus
-  const nP=jenis==="kecil"?3:6;
+  const nP=jenis==="kecil"?5:10;
   for(let j=0;j<nP;j++){
     const px=cx+(r()-.5)*150*lebar, py=by+(r()-.6)*70, arah=(jenis==="lantai"?-90:-110)+(r()-.5)*140;
     const warna=pick([["#c48aa4","#dcaabd","#a8708d"],["#c99a86","#ddb7a3","#a87b68"],["#cf98b0","#e8bfd0","#b57a96"]]);
-    for(let i=0;i<70;i++){
-      const t=r(), a=(arah+(r()-.5)*70)*Math.PI/180, L=4+r()*10, d=t*38;
+    for(let i=0;i<90;i++){
+      const t=r(), a=(arah+(r()-.5)*80)*Math.PI/180, L=5+r()*12, d=t*44;
       const x=px+Math.cos(a)*d, y=py+Math.sin(a)*d;
       bawah+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)}l${(Math.cos(a)*L).toFixed(1)} ${(Math.sin(a)*L).toFixed(1)}" stroke="${pick(warna)}" stroke-width="${(.5+r()).toFixed(2)}" opacity=".8"/>`;
     }
@@ -549,11 +549,11 @@ function rangkai(jenis,seed){
     bawah+=`<path d="M0 0c7-7 21-7 30 0-9 7-23 7-30 0z" fill="${pick(["#3f5a35","#55704a","#2f4a2c","#6b8458"])}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(0)})"/>`;
   }
   // untaian amaranthus gantung (tebal, bergelombang)
-  const nU=jenis==="kecil"?12:jenis==="lantai"?22:30;
+  const nU=jenis==="kecil"?16:jenis==="lantai"?30:40;
   for(let i=0;i<nU;i++){
     const x=cx+(r()-.5)*(jenis==="kecil"?60:110), y=by+(r()-.3)*28;
     const sisa=H-y-4, L=jenis==="lantai"?sisa*(.75+r()*.25):sisa*(.35+r()*.65), sw=(r()-.5)*26;
-    const col=pick(["#8fa27c","#9db08a","#a9b996","#b8c6a3","#7f9670"]), w=3.5+r()*3.5;
+    const col=pick(["#8fa27c","#9db08a","#a9b996","#b8c6a3","#7f9670","#c2cfae"]), w=4+r()*4;
     const ujung=jenis==="lantai"?(r()-.5)*60:sw*.4;
     const d=`M${x.toFixed(1)} ${y.toFixed(1)}q${sw.toFixed(1)} ${(L*.5).toFixed(1)} ${ujung.toFixed(1)} ${L.toFixed(1)}`;
     atas+=`<path d="${d}" stroke="#4c6040" stroke-width="${(w+1.6).toFixed(1)}" fill="none" stroke-linecap="round" opacity=".55"/>`;
@@ -566,14 +566,14 @@ function rangkai(jenis,seed){
     for(let k=0;k<10;k++){ const t=k/9; atas+=`<circle cx="${(x+sw*t*(1-t)+sw*.5*t*t).toFixed(1)}" cy="${(y+L*t).toFixed(1)}" r="${(1.8+r()*1.6).toFixed(1)}" fill="${pick(["#e2a72b","#d39222","#efbe45"])}"/>`; }
   }
   // bunga merah muda kecil bergerombol
-  for(let i=0;i<(jenis==="kecil"?10:26);i++){
+  for(let i=0;i<(jenis==="kecil"?14:34);i++){
     const x=cx+(r()-.5)*130*lebar, y=by+(r()-.5)*56, s=3.5+r()*3, c=pick(["#d98aa6","#c76f90","#e7a5bb","#b85f84"]);
     for(let k=0;k<5;k++){ const a=k*72*Math.PI/180; atas+=`<circle cx="${(x+Math.cos(a)*s*.7).toFixed(1)}" cy="${(y+Math.sin(a)*s*.7).toFixed(1)}" r="${(s*.55).toFixed(1)}" fill="${c}"/>`; }
     atas+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(s*.3).toFixed(1)}" fill="#7d2a48"/>`;
   }
   // anthurium salem/oranye
-  for(let i=0;i<(jenis==="kecil"?3:9);i++){
-    const x=cx+(r()-.5)*120*lebar, y=by+(r()-.5)*56, s=.8+r()*.7, a=(r()-.5)*100;
+  for(let i=0;i<(jenis==="kecil"?4:12);i++){
+    const x=cx+(r()-.5)*120*lebar, y=by+(r()-.5)*56, s=1+r()*.8, a=(r()-.5)*100;
     atas+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(0)}) scale(${s.toFixed(2)})"><path d="M0 14C-16 4-16-12-6-12c3 0 5 2 6 4 1-2 3-4 6-4 10 0 10 16-6 26z" fill="${pick(["#dc7656","#e58a68","#cf6748","#e49a86"])}"/><path d="M0 12V-6" stroke="#b5503a" stroke-width=".7" opacity=".6"/><path d="M-2-6c-4 0-7 3-6 8" stroke="#f5b597" stroke-width="1.6" fill="none" opacity=".8"/><path d="M0 2c2-6 6-10 10-13" stroke="#e8c27a" stroke-width="2.6" stroke-linecap="round" fill="none"/></g>`;
   }
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="${NS}">${bawah}${atas}</svg>`;
@@ -581,7 +581,10 @@ function rangkai(jenis,seed){
 document.querySelectorAll("[data-bunga]").forEach(el=>el.innerHTML=rangkai(el.dataset.bunga,+el.dataset.seed));
 
 /* amplop: badan belakang + lapisan beludru, kantong depan, tutup berenda */
-function rendaTepi(){ let l=""; for(let i=0;i<=24;i++){ const t=i/24, x=t*300, y=t<.5?t*2*104:(1-t)*2*104; l+=`<circle cx="${x.toFixed(1)}" cy="${(y+1).toFixed(1)}" r="7.5" fill="#f7f4ec" stroke="#ddd5c5" stroke-width=".8"/><circle cx="${x.toFixed(1)}" cy="${(y+1).toFixed(1)}" r="2.2" fill="#e3dccd"/>`; } return l; }
+function rendaTepi(){
+  let l=`<path d="M0 0 150 104 300 0" fill="none" stroke="#f5f1e8" stroke-width="16" stroke-linejoin="round"/><path d="M0 0 150 104 300 0" fill="none" stroke="#dcd3c2" stroke-width="2.4" stroke-dasharray="1.5 3.5" stroke-linejoin="round"/><path d="M0 -6 150 98 300 -6" fill="none" stroke="#e4dccd" stroke-width=".8"/>`;
+  const n=40; for(let i=0;i<=n;i++){ const t=i/n, x=t*300, y=t<.5?t*2*104:(1-t)*2*104, nx=t<.5?-.57:.57, ny=.82; const px=x+nx*8, py=y+ny*8; l+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4.2" fill="#f5f1e8" stroke="#dcd3c2" stroke-width=".6"/><circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="1.2" fill="#d6ccba"/>`; }
+  return l; }
 const TUTUP=`<path d="M0 0H300L156 108Q150 112 144 108Z" fill="url(#gKertas)" stroke="#ddd5c5"/>`+rendaTepi();
 const GAMBAR_AMPLOP={
   belakang:(terbuka)=>`<rect width="300" height="203" fill="#efe9de"/><path class="lapisan" d="M7 6H293V196H7Z" fill="#62111a"/>`+(terbuka?`<g transform="translate(0 2) scale(1 -1)">${TUTUP}</g>`:""),
