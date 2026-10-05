@@ -130,6 +130,12 @@ function gambarFoto(ctx,img,x,y,w,h){
   ctx.drawImage(img,x+(w-dw)*P.ox,y+(h-dh)*P.oy,dw,dh); ctx.restore();
   return {dw,dh};
 }
+/* foto kartu selalu hitam-putih, lewat piksel supaya jalan juga di browser tanpa ctx.filter (Safari lama) */
+function hitamPutih(ctx,x,y,w,h){
+  const im=ctx.getImageData(x,y,w,h), d=im.data;
+  for(let i=0;i<d.length;i+=4){ const g=d[i]*.299+d[i+1]*.587+d[i+2]*.114; d[i]=d[i+1]=d[i+2]=g; }
+  ctx.putImageData(im,x,y);
+}
 function logoPutih(ctx,x,y,h){
   if(!LOGO) return 0;
   const w=LOGO.width*h/LOGO.height, c=document.createElement("canvas"); c.width=Math.ceil(w); c.height=Math.ceil(h);
@@ -148,7 +154,7 @@ function teksMuat(ctx,teks,font,maks,lebar){ let u=maks; do{ ctx.font=font.repla
 function gambarKartu(nama){
   const cv=$("kartu"), ctx=cv.getContext("2d"), W=KW, H=KH, X=64;
   ctx.fillStyle="#000"; ctx.fillRect(0,0,W,H);
-  if(FOTO) gambarFoto(ctx,FOTO,0,0,W,FH);
+  if(FOTO){ gambarFoto(ctx,FOTO,0,0,W,FH); hitamPutih(ctx,0,0,W,FH); }
   const g=ctx.createLinearGradient(0,FH*.5,0,FH); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,.85)");
   ctx.fillStyle=g; ctx.fillRect(0,0,W,FH);
   ctx.textAlign="left"; ctx.fillStyle="#fff";
