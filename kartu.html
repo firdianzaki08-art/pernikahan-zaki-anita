@@ -138,7 +138,7 @@ function logoPutih(ctx,x,y,h){
 }
 function kredit(ctx,cx,y,h){
   ctx.font="400 22px Jost, Arial, sans-serif"; ctx.fillStyle="#dcdcdc"; ctx.textBaseline="middle";
-  const t="Made by", tw=ctx.measureText(t).width, lw=LOGO?LOGO.width*h/LOGO.height:0, gap=14, x=cx-(tw+gap+lw)/2;
+  const t="Dibuat oleh", tw=ctx.measureText(t).width, lw=LOGO?LOGO.width*h/LOGO.height:0, gap=14, x=cx-(tw+gap+lw)/2;
   ctx.textAlign="left"; ctx.fillText(t,x,y); logoPutih(ctx,x+tw+gap,y-h*.62,h); ctx.textBaseline="alphabetic";
 }
 
@@ -152,10 +152,10 @@ function gambarKartu(nama){
   const g=ctx.createLinearGradient(0,FH*.5,0,FH); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,.85)");
   ctx.fillStyle=g; ctx.fillRect(0,0,W,FH);
   ctx.textAlign="left"; ctx.fillStyle="#fff";
-  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("Wedding Announcement",X,FH-100);
+  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("Kabar Pernikahan",X,FH-100);
   ctx.font="800 66px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,X,FH-32);
 
-  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#cfcfcf"; ctx.fillText("Dear",X,FH+70);
+  ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#cfcfcf"; ctx.fillText("Kepada Yth.",X,FH+70);
   ctx.fillStyle="#fff"; teksMuat(ctx,nama||"Tamu Undangan","700 {}px Archivo, Arial, sans-serif",44,W-2*X); ctx.fillText(nama||"Tamu Undangan",X,FH+124);
   ctx.fillStyle="#333"; ctx.fillRect(X,FH+162,W-2*X,2);
 
@@ -176,7 +176,7 @@ function gambarOG(){
   if(FOTO){ tutupi(ctx,FOTO,0,0,520,630,.1); }
   const g=ctx.createLinearGradient(380,0,520,0); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"#000"); ctx.fillStyle=g; ctx.fillRect(380,0,141,630);
   const X=580; ctx.textAlign="left"; ctx.fillStyle="#fff";
-  ctx.font="400 32px Jost, Arial, sans-serif"; ctx.fillText("The Wedding Of",X,190);
+  ctx.font="400 32px Jost, Arial, sans-serif"; ctx.fillText("Pernikahan",X,190);
   ctx.font="800 66px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,X,270);
   ctx.font="700 28px Archivo, Arial, sans-serif"; ctx.fillStyle="#f2c94c"; ctx.fillText("Akad Nikah",X,350);
   ctx.font="600 30px Jost, Arial, sans-serif"; ctx.fillStyle="#fff"; ctx.fillText(D.tanggal,X,396);
