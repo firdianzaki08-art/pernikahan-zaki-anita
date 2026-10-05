@@ -141,6 +141,7 @@ svg.pasangan{display:block}
 .acara .tombol-kuning{margin-top:20px;color:var(--sage-gelap)}
 .swatch{display:flex;justify-content:center;gap:10px;margin-top:20px}
 .swatch i{width:52px;height:52px;border-radius:50%}
+.acara .maaf{font-size:14px;line-height:1.7;max-width:310px;margin:40px auto 0;opacity:.95}
 .acara .kode{font-weight:500;font-size:14px;letter-spacing:.06em;margin:0}
 
 /* ---------- 5. rangkaian acara ---------- */
@@ -260,14 +261,14 @@ svg.pasangan{display:block}
 <!-- SAMPUL -->
 <div id="sampul">
   <div class="isi">
-    <div class="judul-kuas kuas"><span>You're</span><span class="l2">Invited!</span></div>
+    <div class="judul-kuas kuas"><span>Good</span><span class="l2">News!</span></div>
     <div class="kartu-gambar">
       <svg class="pasangan" viewBox="0 0 540 1010" aria-label="Ilustrasi Zaki dan Anita"><use href="#pasangan" width="540" height="1010"/></svg>
       <div class="daisy-lapis" data-daisy="kartu" data-seed="2"></div>
     </div>
     <div class="nama kuas">Zaki &amp; Anita</div>
     <div class="tgl">Sabtu, 27 Maret 2027</div>
-    <button type="button" class="tombol-kuning" id="bukaUndangan">Open Invitation</button>
+    <button type="button" class="tombol-kuning" id="bukaUndangan">Open</button>
     <div class="tamu">Kepada Yth. Bapak/Ibu/Saudara/i<b id="namaTamu">Tamu Undangan</b></div>
   </div>
 </div>
@@ -313,7 +314,7 @@ svg.pasangan{display:block}
     <svg class="loop" data-loop="#fff"></svg>
     <div class="bismillah muncul">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
     <p class="salam muncul">Assalamu’alaikum Warahmatullahi Wabarakatuh.</p>
-    <p class="undang muncul">With the blessing of Allah, together with our families, we invite you to join us as we exchange our wedding vows.</p>
+    <p class="undang muncul">With the blessing of Allah, we joyfully share the news that we are getting married.</p>
     <div class="judul-bg muncul"><span class="the">The</span><p class="caps">BRIDE &amp; GROOM</p></div>
 
     <div class="figur wanita muncul zoom">
@@ -351,10 +352,7 @@ svg.pasangan{display:block}
     <p class="muncul" data-isi="akad">08.00 - 11.00 WIB</p>
     <p class="tempat muncul" data-isi="tempat">Masjid Al Azhom</p>
     <p class="muncul" data-isi="alamat">Jl. Satria Sudirman, Kota Tangerang, Banten</p>
-    <a class="tombol-kuning kecil muncul" id="peta" href="#" target="_blank" rel="noopener">See Location</a>
-    <h3 class="muncul" style="margin-top:56px">Dress Code</h3>
-    <p class="kode muncul" data-isi="dressCode">Rapi &amp; Sopan</p>
-    <div class="swatch muncul"><i style="background:var(--sage)"></i><i style="background:var(--kuning-2)"></i><i style="background:var(--khaki)"></i></div>
+    <p class="maaf muncul">Tanpa mengurangi rasa hormat, karena pernikahan kami dilangsungkan secara <i>intimate</i> bersama keluarga, kami mohon maaf tidak dapat mengundang Bapak/Ibu/Saudara/i untuk hadir. Doa restu Anda sudah sangat berarti bagi kami.</p>
   </section>
 
   <!-- 5. rangkaian acara -->
@@ -371,7 +369,7 @@ svg.pasangan{display:block}
   <section class="hadiah">
     <span class="the muncul" style="color:var(--teks-hijau)">The</span>
     <p class="caps muncul">WEDDING<br>GIFT</p>
-    <p class="intro muncul">Your presence is the most meaningful gift of all.<br>But if you'd like to give something extra, we kindly prefer cash gifts to help us begin our next chapter together.<br><br>Thank you!</p>
+    <p class="intro muncul">Your prayers are the most meaningful gift of all.<br>But if you'd like to give something extra, we kindly prefer cash gifts to help us begin our next chapter together.<br><br>Thank you!</p>
     <div id="rekening"></div>
     <p class="kirim muncul">Thinking of sending a gift? Just drop us a message on WhatsApp first and we'll share our address with you!</p>
     <a class="tombol-kuning muncul" id="tombolWa" href="#" target="_blank" rel="noopener">Whatsapp Number</a>
@@ -383,14 +381,9 @@ svg.pasangan{display:block}
     <svg class="loop" data-loop="#5d6a4b" style="position:relative"></svg>
     <div class="ruang">
       <div class="panel muncul">
-        <h2>You're Invited!</h2>
-        <div class="tg">Sabtu, 27 Maret</div>
-        <div class="jm">08.00</div>
-        <div class="pilih">
-          <button type="button" data-hadir="hadir" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Hadir</button>
-          <button type="button" data-hadir="tidak" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>Tidak Hadir</button>
-        </div>
-        <form class="form-ucapan" id="formRsvp" hidden>
+        <h2>Ucapan &amp; Doa</h2>
+        <div class="jm" style="text-align:center;margin-top:10px">Kirimkan doa restu untuk kami</div>
+        <form class="form-ucapan" id="formRsvp">
           <input id="rNama" required placeholder="Nama" autocomplete="name" maxlength="80">
           <textarea id="rPesan" placeholder="Tulis ucapan &amp; doa" maxlength="600"></textarea>
           <button type="submit">Kirim</button>
@@ -420,7 +413,7 @@ svg.pasangan{display:block}
   <!-- 9. see you there -->
   <section class="sampai langit">
     <div class="awan"></div>
-    <div class="judul-kuas kuas"><span class="a">See you</span><span class="b">there!</span></div>
+    <div class="judul-kuas kuas"><span class="a">Thank</span><span class="b">you!</span></div>
     <div class="hitung" aria-label="Hitung mundur">
       <div><b id="hHari">0</b><span>DAYS</span></div><i>:</i>
       <div><b id="hJam">00</b><span>HOURS</span></div><i>:</i>
@@ -563,7 +556,6 @@ $("rundown").innerHTML='<div class="garis" style="grid-row:1/'+(ISI.rundown.leng
 /* ================= isi dari data ================= */
 const nilai={"pria.nama":ISI.pria.nama,"pria.ayah":ISI.pria.ayah,"wanita.nama":ISI.wanita.nama,"wanita.ayah":ISI.wanita.ayah,akad:ISI.akad,tempat:ISI.tempat,alamat:ISI.alamat,dressCode:ISI.dressCode};
 document.querySelectorAll("[data-isi]").forEach(el=>{ if(nilai[el.dataset.isi]!=null) el.textContent=nilai[el.dataset.isi]; });
-$("peta").href=ISI.peta;
 $("tombolWa").href="https://wa.me/"+ISI.waMempelai;
 const ikonSalin='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>';
 const bingkaiTiket='<svg class="bingkai" viewBox="0 0 300 180" preserveAspectRatio="none"><path d="M14 4H286a10 10 0 0 0 10 10V166a10 10 0 0 0-10 10H14a10 10 0 0 0-10-10V14A10 10 0 0 0 14 4z" fill="none" stroke="#4b4b3f" stroke-width="1.4"/><path d="M18 10H282a8 8 0 0 0 8 8V162a8 8 0 0 0-8 8H18a8 8 0 0 0-8-8V18a8 8 0 0 0 8-8z" fill="none" stroke="#4b4b3f" stroke-width="1"/></svg>';
@@ -592,18 +584,13 @@ bacaTamu(); addEventListener("hashchange",bacaTamu);
 const SB_URL="https://nwyuhzbzkzmelorgfwla.supabase.co/rest/v1/ucapan_undangan";
 const SB_KEY="sb_publishable_X6VyZbMQkk3ILwkKP4vvTw_zcdXHcKH";
 const LABEL={hadir:"Hadir",tidak:"Tidak Hadir",ragu:"Masih Ragu"};
-let kehadiran="";
-document.querySelectorAll("[data-hadir]").forEach(b=>b.onclick=()=>{
-  kehadiran=b.dataset.hadir;
-  document.querySelectorAll("[data-hadir]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
-  $("formRsvp").hidden=false; ($("rNama").value?$("rPesan"):$("rNama")).focus({preventScroll:true});
-});
+const kehadiran="tidak"; /* intimate wedding: tamu hanya mengirim doa */
 async function muatUcapan(){
   const box=$("ucapan");
   try{
     const r=await fetch(SB_URL+"?select=nama,kehadiran,pesan,dibuat&order=dibuat.desc&limit=500",{headers:{apikey:SB_KEY}});
     if(!r.ok) throw 0; const data=await r.json();
-    box.innerHTML=data.length?data.map(u=>`<article><div class="av">${esc((u.nama||"?").trim().charAt(0).toUpperCase())}</div><div><b>${esc(u.nama)}</b><span>${esc(u.pesan||LABEL[u.kehadiran]||"")}</span></div></article>`).join(""):'<p class="kosong">Belum ada ucapan. Jadilah yang pertama.</p>';
+    box.innerHTML=data.length?data.map(u=>`<article><div class="av">${esc((u.nama||"?").trim().charAt(0).toUpperCase())}</div><div><b>${esc(u.nama)}</b><span>${esc(u.pesan||"")}</span></div></article>`).join(""):'<p class="kosong">Belum ada ucapan. Jadilah yang pertama.</p>';
   }catch{ box.innerHTML='<p class="kosong">Ucapan belum bisa dimuat saat ini.</p>'; }
 }
 muatUcapan();
@@ -613,11 +600,11 @@ $("formRsvp").addEventListener("submit",async e=>{
   if(!nama){ $("rNama").focus(); return; }
   const t=e.target.querySelector("[type=submit]"); t.disabled=true; $("catatanRsvp").textContent="Mengirim…";
   try{
-    const r=await fetch(SB_URL,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({nama,kehadiran:kehadiran||"hadir",pesan})});
+    const r=await fetch(SB_URL,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({nama,kehadiran,pesan})});
     if(!r.ok) throw 0;
     $("rPesan").value=""; $("catatanRsvp").textContent="Terima kasih, ucapan Anda sudah terkirim."; muatUcapan();
   }catch{
-    $("catatanRsvp").innerHTML=`Pengiriman langsung gagal. <a href="https://wa.me/${ISI.waMempelai}?text=${encodeURIComponent(`Assalamu'alaikum, saya ${nama}.\nKehadiran: ${LABEL[kehadiran]||"Hadir"}.\n\n${pesan}`)}" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>.`;
+    $("catatanRsvp").innerHTML=`Pengiriman langsung gagal. <a href="https://wa.me/${ISI.waMempelai}?text=${encodeURIComponent(`Assalamu'alaikum, saya ${nama}.\n\n${pesan}`)}" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>.`;
   }
   t.disabled=false;
 });

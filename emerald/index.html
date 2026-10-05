@@ -191,6 +191,8 @@ section{position:relative;overflow:hidden}
 .rsvp .lok svg{flex:0 0 20px;height:20px;margin-top:2px}
 .rsvp .lok b{font-weight:600;font-size:16px}
 .rsvp .lok small{display:block;font-size:13px;opacity:.75;margin-top:3px;line-height:1.5}
+.rsvp .ajak-doa{font-family:var(--f-sans);font-size:15px;color:#fff;opacity:.85;text-align:center;margin:26px 0 0}
+.std .maaf{letter-spacing:.02em;font-size:14px;line-height:1.7;max-width:310px;margin:22px auto 0}
 .pilih{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
 .pilih button{padding:22px 8px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.12);font-family:var(--f-sans);font-weight:500;font-size:16px;color:#fff;transition:background .2s,border-color .2s}
 .pilih button i{display:block;font-style:normal;font-size:40px;line-height:1.2;margin-bottom:10px}
@@ -361,7 +363,7 @@ section{position:relative;overflow:hidden}
   <section class="mempelai marun-bg derau">
     <div class="pita-damask"></div>
     <div class="bismillah muncul">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
-    <p class="pengantar muncul">Dengan memohon rahmat &amp; ridho Allah SWT,<br>kami mengundang bapak/ibu/saudara/i<br>untuk hadir pada pernikahan:</p>
+    <p class="pengantar muncul">Dengan memohon rahmat &amp; ridho Allah SWT,<br>dengan penuh kebahagiaan<br>kami mengabarkan pernikahan kami:</p>
     <div class="orang">
       <div class="bingkai-oval muncul kiri"><div class="foto ph"></div><svg class="hias" viewBox="0 0 200 278"><use href="#hiasOval"/></svg></div>
       <div class="info muncul kanan">
@@ -400,7 +402,7 @@ section{position:relative;overflow:hidden}
       <p class="tempat muncul" data-isi="tempatBesar">MASJID AL AZHOM</p>
       <p class="alamat muncul" data-isi="alamat">Jl. Satria Sudirman, Kota Tangerang, Banten</p>
       <svg class="kala muncul" id="kala" viewBox="0 0 150 60" aria-hidden="true"></svg>
-      <a class="tombol-marun muncul" id="peta" href="#" target="_blank" rel="noopener">Google Maps</a>
+      <p class="maaf muncul">Tanpa mengurangi rasa hormat, karena pernikahan kami dilangsungkan secara <i>intimate</i> bersama keluarga, kami mohon maaf tidak dapat mengundang Bapak/Ibu/Saudara/i untuk hadir. Doa restu Anda sudah sangat berarti bagi kami.</p>
       <div class="hitung muncul" aria-label="Hitung mundur">
         <div><b id="hHari">0</b><span>Hari</span></div><div><b id="hJam">0</b><span>Jam</span></div>
         <div><b id="hMenit">0</b><span>Menit</span></div><div><b id="hDetik">0</b><span>Detik</span></div>
@@ -420,7 +422,7 @@ section{position:relative;overflow:hidden}
       <use href="#kilau" x="104" y="10" width="9" height="9" stroke="none"/><use href="#kilau" x="10" y="78" width="7" height="7" stroke="none"/>
       <circle cx="118" cy="40" r="4"/><path d="M118 36v8M114 40h8" stroke-width="1.2"/>
     </svg>
-    <p class="intro muncul">Doa restu dan kehadiran Anda merupakan karunia yang sangat berarti bagi kami.<br><br>Namun, jika memberi adalah ungkapan tanda kasih, Anda dapat memberi melalui dibawah ini.</p>
+    <p class="intro muncul">Doa restu Anda merupakan karunia yang sangat berarti bagi kami.<br><br>Namun, jika memberi adalah ungkapan tanda kasih, Anda dapat memberi melalui dibawah ini.</p>
     <div id="rekening"></div>
     <div class="bunga" data-bunga="lantai" data-seed="47" style="left:-6%;bottom:6%;width:26%"></div>
   </section>
@@ -433,11 +435,8 @@ section{position:relative;overflow:hidden}
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>
       <div><b data-isi="tempat">Masjid Al Azhom</b><small data-isi="alamat">Jl. Satria Sudirman, Kota Tangerang, Banten</small></div>
     </div>
-    <div class="pilih muncul">
-      <button type="button" data-hadir="hadir" aria-pressed="false"><i>🎉</i>Hadir</button>
-      <button type="button" data-hadir="tidak" aria-pressed="false"><i>😢</i>Tidak Hadir</button>
-    </div>
-    <form class="form-ucapan" id="formRsvp" hidden>
+    <p class="ajak-doa muncul">Kirimkan ucapan &amp; doa restu untuk kami</p>
+    <form class="form-ucapan" id="formRsvp">
       <input id="rNama" required placeholder="Nama" autocomplete="name" maxlength="80">
       <textarea id="rPesan" placeholder="Tulis ucapan &amp; doa" maxlength="600"></textarea>
       <button type="submit">Kirim</button>
@@ -477,7 +476,7 @@ section{position:relative;overflow:hidden}
         <svg class="hias" id="bingkaiAkhir" viewBox="0 0 300 416" aria-hidden="true"></svg>
         <svg style="position:absolute;right:6%;top:14%;width:16%;aspect-ratio:1.36;transform:rotate(-14deg)" viewBox="0 0 60 44"><use href="#kupu"/></svg>
         <div class="teks">
-          Menjadi sebuah kebahagiaan<br>bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dalam hari bahagia kami. Terimakasih atas segala ucapan, doa, dan perhatian yang diberikan.<br><br>Sampai jumpa di hari pernikahan kami!
+          Menjadi sebuah kebahagiaan<br>bagi kami apabila Bapak/Ibu/Saudara/i berkenan memberikan doa restu untuk pernikahan kami. Terimakasih atas segala ucapan, doa, dan perhatian yang diberikan.
           <div class="nm script">Zaki<br>&amp;<br>Anita</div>
         </div>
       </div>
@@ -654,7 +653,6 @@ $("kala").innerHTML=`<path d="M38 40C70 46 110 44 146 34" stroke="#6e7f5a" strok
 /* ================= isi dari data ================= */
 const nilai={"pria.nama":ISI.pria.nama,"pria.ortu":ISI.pria.ortu,"wanita.nama":ISI.wanita.nama,"wanita.ortu":ISI.wanita.ortu,akad:ISI.akad,tempat:ISI.tempat,tempatBesar:ISI.tempat.toUpperCase(),alamat:ISI.alamat};
 document.querySelectorAll("[data-isi]").forEach(el=>{ if(nilai[el.dataset.isi]!=null) el.textContent=nilai[el.dataset.isi]; });
-$("peta").href=ISI.peta;
 const ikonSalin='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>';
 $("rekening").innerHTML=ISI.rekening.map(r=>`<div class="rek muncul"><div class="no">${esc(r.nomor)}</div><div class="bank">${esc(r.bank)}</div><div class="an">a.n ${esc(r.atasNama)}</div><button type="button" class="salin" data-salin="${esc(r.nomor)}">${ikonSalin}<span>Copy</span></button></div>`).join("");
 $("rekening").addEventListener("click",async e=>{
@@ -682,19 +680,14 @@ bacaTamu(); addEventListener("hashchange",bacaTamu);
 const SB_URL="https://nwyuhzbzkzmelorgfwla.supabase.co/rest/v1/ucapan_undangan";
 const SB_KEY="sb_publishable_X6VyZbMQkk3ILwkKP4vvTw_zcdXHcKH";
 const LABEL={hadir:"Hadir",tidak:"Tidak Hadir",ragu:"Masih Ragu"};
-let kehadiran="";
-document.querySelectorAll("[data-hadir]").forEach(b=>b.onclick=()=>{
-  kehadiran=b.dataset.hadir;
-  document.querySelectorAll("[data-hadir]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
-  $("formRsvp").hidden=false; ($("rNama").value?$("rPesan"):$("rNama")).focus({preventScroll:true});
-});
+const kehadiran="tidak"; /* intimate wedding: tamu hanya mengirim doa */
 const tglId=t=>{ try{ return new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}); }catch{ return ""; } };
 async function muatUcapan(){
   const box=$("ucapan");
   try{
     const r=await fetch(SB_URL+"?select=nama,kehadiran,pesan,dibuat&order=dibuat.desc&limit=500",{headers:{apikey:SB_KEY}});
     if(!r.ok) throw 0; const data=await r.json();
-    box.innerHTML=data.length?data.map(u=>`<article><b>${esc(u.nama)}</b><i>${esc(LABEL[u.kehadiran]||"")}${u.dibuat?" · "+esc(tglId(u.dibuat)):""}</i>${u.pesan?`<div>${esc(u.pesan)}</div>`:""}</article>`).join(""):'<p class="kosong">Belum ada ucapan. Jadilah yang pertama.</p>';
+    box.innerHTML=data.length?data.map(u=>`<article><b>${esc(u.nama)}</b><i>${u.dibuat?esc(tglId(u.dibuat)):""}</i>${u.pesan?`<div>${esc(u.pesan)}</div>`:""}</article>`).join(""):'<p class="kosong">Belum ada ucapan. Jadilah yang pertama.</p>';
   }catch{ box.innerHTML='<p class="kosong">Ucapan belum bisa dimuat saat ini.</p>'; }
 }
 muatUcapan();
@@ -704,12 +697,12 @@ $("formRsvp").addEventListener("submit",async e=>{
   if(!nama){ $("rNama").focus(); return; }
   const t=e.target.querySelector("[type=submit]"); t.disabled=true; $("catatanRsvp").textContent="Mengirim…";
   try{
-    const r=await fetch(SB_URL,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({nama,kehadiran:kehadiran||"hadir",pesan})});
+    const r=await fetch(SB_URL,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({nama,kehadiran,pesan})});
     if(!r.ok) throw 0;
     $("rPesan").value=""; $("catatanRsvp").textContent="Terima kasih, ucapan Anda sudah terkirim."; muatUcapan();
   }catch{
     const wa=(ISI.waMempelai||"").replace(/\D/g,"");
-    if(wa){ open("https://wa.me/"+wa+"?text="+encodeURIComponent(`Assalamu'alaikum, saya ${nama}.\nKehadiran: ${LABEL[kehadiran]||"Hadir"}.\n\n${pesan}`),"_blank","noopener"); $("catatanRsvp").textContent="Pengiriman langsung gagal, jadi ucapan dibuka di WhatsApp."; }
+    if(wa){ open("https://wa.me/"+wa+"?text="+encodeURIComponent(`Assalamu'alaikum, saya ${nama}.\n\n${pesan}`),"_blank","noopener"); $("catatanRsvp").textContent="Pengiriman langsung gagal, jadi ucapan dibuka di WhatsApp."; }
     else $("catatanRsvp").textContent="Gagal mengirim. Periksa koneksi lalu coba lagi.";
   }
   t.disabled=false;
