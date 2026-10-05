@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Zaki &amp; Anita Sage</title>
+<meta name="description" content="Sabtu, 27 Maret 2027 · Masjid Al Azhom">
+<meta property="og:title" content="The Wedding of Zaki &amp; Anita">
+<meta property="og:description" content="Sabtu, 27 Maret 2027 · Masjid Al Azhom">
+<meta property="og:image" content="https://firdianzaki08-art.github.io/undangan-zaki-anita/og.jpg?v=2">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#667055">
+<meta name="author" content="Hipo Plus">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23fff'%3E%3Cellipse cx='12' cy='5' rx='2.4' ry='5'/%3E%3Cellipse cx='12' cy='19' rx='2.4' ry='5'/%3E%3Cellipse cx='5' cy='12' rx='5' ry='2.4'/%3E%3Cellipse cx='19' cy='12' rx='5' ry='2.4'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='3.2' fill='%23e8b417'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600&family=Lexend:wght@300;400;500;600&family=Mr+Dafoe&family=Noto+Serif:wght@400&family=Playfair+Display:wght@700&display=swap">
+<style>
+/* Tema "Sage Daisy": hijau sage + kuning mustard, langit cat air, bukit rumput dan bunga daisy.
+   Satu kolom ala layar HP (maks 480px). Ilustrasi pasangan = ilustrasi Zaki & Anita milik sendiri. */
+:root{
+  --sage:#667055; --sage-gelap:#4f5a3d; --kuning:#e8b417; --kuning-2:#e2b862; --khaki:#9a8c66;
+  --kertas:#e8e7e0; --teks-hijau:#55623f; --navy:#123f7a; --putih:#fff;
+  --langit-1:#8fc0e5; --langit-2:#c9e3f3;
+  --f-kuas:"Mr Dafoe","Yellowtail","Brush Script MT",cursive;
+  --f-sans:"Lexend","Segoe UI",system-ui,sans-serif;
+  --f-ui:"Inter","Segoe UI",system-ui,sans-serif;
+  --f-judul:"Playfair Display",Georgia,serif;
+  --f-angka:"Noto Serif",Georgia,serif;
+  --kolom:480px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sage);color:var(--putih);font-family:var(--f-sans);overflow-x:hidden}
+button{font:inherit;cursor:pointer;color:inherit}
+main{position:relative;max-width:var(--kolom);margin:0 auto;overflow:hidden;background:var(--sage)}
+section{position:relative;overflow:hidden}
+.kuas{font-family:var(--f-kuas);font-weight:400;line-height:.9}
+.tombol-kuning{display:inline-block;padding:12px 28px;border:0;border-radius:8px;background:var(--kuning);color:var(--sage-gelap);font-family:var(--f-sans);font-weight:600;font-size:20px;text-decoration:none;letter-spacing:-.01em}
+.tombol-kuning.kecil{font-size:17px;padding:9px 0;width:160px;background:var(--kuning-2);border-radius:6px}
+
+/* ---------- langit cat air & rumput ---------- */
+.langit{background:linear-gradient(180deg,var(--langit-1),var(--langit-2) 70%,#e3eef3)}
+.awan{position:absolute;inset:0;pointer-events:none;background-image:var(--awan);background-size:520px 520px;opacity:.95}
+.bukit{position:absolute;left:0;right:0;bottom:0;pointer-events:none}
+.bukit svg{width:100%;height:100%;display:block}
+.daisy-lapis{position:absolute;left:0;right:0;bottom:0;pointer-events:none}
+.daisy-lapis svg{width:100%;height:100%;display:block;overflow:visible}
+svg.pasangan{display:block}
+
+/* ---------- kartu bergambar (sampul & lagu) ---------- */
+.kartu-gambar{position:relative;width:82%;margin:0 auto;aspect-ratio:.73;border-radius:32px;overflow:hidden;background:#c8e7f8}
+.kartu-gambar .pasangan{position:absolute;left:12%;bottom:-36%;width:76%;height:auto}
+.kartu-gambar .daisy-lapis{height:42%}
+.judul-kuas{position:absolute;z-index:3;left:0;right:0;color:var(--kuning);text-align:center;pointer-events:none}
+
+/* ---------- sampul ---------- */
+#sampul{position:fixed;inset:0;z-index:60;background:var(--sage);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:transform 1s cubic-bezier(.7,0,.3,1),opacity 1s}
+#sampul .isi{position:relative;width:100%;max-width:var(--kolom);padding:24px 0 30px;text-align:center}
+#sampul .kartu-gambar{margin-top:46px;aspect-ratio:.74}
+#sampul .judul-kuas{top:6px;font-size:96px;line-height:.82;transform:rotate(-9deg)}
+#sampul .judul-kuas span{display:block}
+#sampul .judul-kuas .l2{margin-left:-10px}
+#sampul .nama{font-size:52px;color:var(--kuning);margin-top:18px}
+#sampul .tgl{font-size:16px;margin-top:4px}
+#sampul .tombol-kuning{margin-top:16px;min-width:200px}
+#sampul .tamu{font-size:12px;opacity:.85;margin-top:14px;font-weight:300}
+#sampul .tamu b{display:block;font-weight:500;font-size:16px;opacity:1;margin-top:2px}
+#sampul.buka{transform:translateY(-100%);opacity:.6;pointer-events:none}
+
+/* ---------- 1. we're getting married + pemutar ---------- */
+.lagu{padding:58px 0 46px;text-align:center}
+.lagu .kartu-gambar{aspect-ratio:.76}
+.lagu .judul-kuas{top:34px;font-size:78px;line-height:.85;transform:rotate(-8deg)}
+.lagu .judul-kuas span{display:block}
+.lagu .judul-kuas .a{text-align:left;padding-left:10px}
+.lagu .judul-kuas .b{margin:-4px 0 0 50px}
+.lagu .ajak{font-size:15px;margin:26px 0 0}
+.pemutar{margin-top:18px}
+.pemutar .bar{position:relative;width:58%;height:2px;margin:0 auto 22px;background:rgba(255,255,255,.9);cursor:pointer}
+.pemutar .bar i{position:absolute;top:50%;left:0;width:12px;height:12px;border-radius:50%;background:#fff;transform:translate(-50%,-50%)}
+.pemutar .kontrol{display:flex;justify-content:center;align-items:center;gap:26px}
+.pemutar button{background:none;border:0;padding:4px;display:grid;place-items:center}
+.pemutar svg{width:22px;height:22px;fill:#fff}
+.pemutar .utama{width:44px;height:44px;border-radius:50%;background:#fff}
+.pemutar .utama svg{fill:var(--sage);width:22px;height:22px}
+.pemutar .redup svg{opacity:.6}
+
+/* ---------- 2. ayat + nama + pasangan di bukit ---------- */
+.ayat{min-height:740px;padding:34px 30px 0;text-align:center;color:var(--teks-hijau)}
+.ayat blockquote{position:relative;margin:0;font-size:14.5px;line-height:1.5;font-weight:400}
+.ayat cite{position:relative;display:block;font-style:normal;margin-top:16px;font-size:14px}
+.ayat .nama-besar{position:relative;z-index:2;font-size:104px;line-height:.78;color:var(--teks-hijau);margin-top:70px;transform:rotate(-6deg)}
+.ayat .nama-besar span{display:block}
+.ayat .nama-besar .w{margin:-6px -30px 0 40px}
+.ayat .bukit{height:44%}
+.ayat .pasangan{position:absolute;left:50%;bottom:-12%;width:52%;transform:translateX(-50%);z-index:1}
+.ayat .daisy-lapis{height:13%;z-index:2}
+
+/* ---------- 3. mempelai ---------- */
+.loop{display:block;width:100%;height:30px}
+.mempelai{padding:0 0 10px;text-align:center}
+.bismillah{font-family:"Amiri",serif;font-size:30px;margin:30px 0 0;white-space:nowrap}
+.mempelai .salam{font-weight:500;font-size:14px;margin:18px 16px 0}
+.mempelai .undang{font-weight:500;font-size:14px;line-height:1.3;margin:20px 22px 0}
+.the{font-family:var(--f-kuas);font-size:34px;line-height:1;display:block}
+.caps{font-weight:400;font-size:30px;letter-spacing:.12em;line-height:1.1;margin:0}
+.mempelai .judul-bg{margin-top:34px}
+.figur{position:relative;width:62%;aspect-ratio:.82;margin:56px auto 0}
+.figur .gelombang{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.figur .foto{position:absolute;inset:13% 16%;background:#cfd2c4;display:grid;place-items:center}
+.figur .sketsa{position:absolute;width:44%;bottom:-4%;right:-24%}
+.figur.pria .sketsa{right:auto;left:-26%}
+.ph::after{content:"";width:40px;height:40px;opacity:.45;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f5a3d' stroke-width='1.5'%3E%3Cpath d='M3 8a2 2 0 0 1 2-2h2.5l1.5-2h6l1.5 2H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Ccircle cx='12' cy='13' r='3.5'/%3E%3C/svg%3E")}
+.mempelai h3{font-family:var(--f-kuas);font-weight:400;font-size:46px;line-height:1.1;color:var(--kuning);margin:30px 10px 0}
+.mempelai .ortu{font-weight:500;font-size:14px;line-height:1.3;margin:6px 0 0}
+.mempelai .dan{font-family:var(--f-kuas);font-size:44px;color:var(--kuning);margin:60px 0 0;line-height:1}
+.sketsa svg{width:100%;height:auto;display:block;overflow:visible}
+.sketsa svg *{fill:none!important;stroke:#fff!important;stroke-width:3.2px!important}
+
+/* ---------- 4. save the date + acara ---------- */
+.std{padding:58px 0 0;text-align:center;background:linear-gradient(180deg,var(--langit-1) 0,var(--langit-2) 32%,#e6edef 46%,var(--kertas) 56%)}
+.std .awan{bottom:auto;height:60%;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.std h2{position:relative;font-size:92px;line-height:.8;color:var(--teks-hijau);margin:0;transform:rotate(-5deg)}
+.std h2 span{display:block}
+.std h2 .the2{font-size:56px;display:inline-block;margin-right:-6px;vertical-align:8px}
+.bulan{position:relative;color:var(--navy);font-weight:600;font-size:22px;margin-top:40px;margin-bottom:12px}
+.deret{position:relative;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;margin:20px 6px 0;color:var(--navy);font-weight:600;font-size:22px}
+.deret .hati{position:relative}
+.deret .hati svg{position:absolute;left:50%;top:50%;width:84px;height:84px;transform:translate(-50%,-30%);overflow:visible}
+.tahun{position:relative;color:var(--navy);font-weight:600;font-size:23px;margin-top:30px}
+.masjid{position:relative;display:block;width:88%;margin:22px auto 0}
+.acara{background:var(--kertas);color:#333;padding:30px 24px 56px;text-align:center}
+.acara h3{font-family:var(--f-kuas);font-weight:400;font-size:52px;color:var(--teks-hijau);margin:20px 0 22px;line-height:1.1}
+.acara .hari{font-weight:500;font-size:14px;letter-spacing:.08em}
+.acara p{margin:6px 0;font-size:14px;letter-spacing:.08em;line-height:1.85;font-weight:400}
+.acara .tempat{font-weight:500;margin-top:20px}
+.acara .tombol-kuning{margin-top:20px;color:var(--sage-gelap)}
+.swatch{display:flex;justify-content:center;gap:10px;margin-top:20px}
+.swatch i{width:52px;height:52px;border-radius:50%}
+.acara .kode{font-weight:500;font-size:14px;letter-spacing:.06em;margin:0}
+
+/* ---------- 5. rangkaian acara ---------- */
+.rincian{background:var(--kertas);padding:30px 8px 40px}
+.kartu-gerigi{position:relative;color:#fff;text-align:center;padding:96px 30px 80px}
+.kartu-gerigi > svg.latar{position:absolute;inset:0;width:100%;height:100%}
+.kartu-gerigi .caps{position:relative;font-size:32px}
+.kartu-gerigi .the{position:relative}
+.lini-acara{position:relative;margin:50px auto 0;width:100%;max-width:340px;display:grid;grid-template-columns:1fr 2px 1fr;column-gap:12px}
+.lini-acara .garis{grid-column:2;grid-row:1/-1;background:#fff;position:relative}
+.lini-acara .garis::before,.lini-acara .garis::after{content:"";position:absolute;left:50%;width:10px;height:2px;background:#fff;transform:translateX(-50%)}
+.lini-acara .garis::before{top:0}.lini-acara .garis::after{bottom:0}
+.butir{display:flex;align-items:center;gap:8px;padding:16px 0;font-size:11px;letter-spacing:.12em;line-height:1.5;text-transform:uppercase}
+.butir svg{flex:0 0 50px;height:46px;fill:none;stroke:#fff;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.butir.kanan{grid-column:3;text-align:left}
+.butir.kiri{grid-column:1;justify-content:flex-end;text-align:right}
+.butir b{display:block;font-weight:400;font-size:13px;white-space:nowrap}
+
+/* ---------- 6. hadiah ---------- */
+.hadiah{background:var(--kertas);color:var(--teks-hijau);padding:30px 26px 60px;text-align:center}
+.hadiah .caps{color:var(--teks-hijau)}
+.hadiah .intro{font-size:14.5px;line-height:1.6;margin:22px 0 0;color:#4f5a3d}
+.tiket{position:relative;width:min(300px,84%);margin:30px auto 0;padding:24px 22px 22px;text-align:left;color:#4b4b3f;transform:rotate(-4deg)}
+.tiket+.tiket{transform:rotate(3deg);margin-top:26px}
+.tiket.muncul.terlihat{transform:rotate(-4deg)}.tiket+.tiket.muncul.terlihat{transform:rotate(3deg)}
+.tiket svg.bingkai{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tiket .bank{position:relative;font-family:var(--f-ui);font-weight:800;font-style:italic;font-size:24px;color:#13448f;letter-spacing:-.02em}
+.tiket .no{position:relative;font-size:16px;margin-top:8px}
+.tiket .an{position:relative;font-size:15px;margin-top:16px;line-height:1.3;padding-right:66px}
+.tiket .salin{position:absolute;right:20px;bottom:30px;border:0;border-radius:4px;background:var(--kuning);color:#5a4a10;font-size:10px;padding:5px 12px;display:flex;align-items:center;gap:5px}
+.tiket .salin svg{width:10px;height:10px}
+.hadiah .kirim{font-size:14px;line-height:1.55;margin:36px 10px 0}
+.hadiah .tombol-kuning{margin-top:18px;font-size:18px;padding:9px 26px}
+
+/* ---------- 7. rsvp ---------- */
+.rsvp{padding:0 0 0}
+.rsvp .awan{opacity:.85}
+.rsvp .ruang{position:relative;padding:24px 24px 30px}
+.panel{position:relative;padding:22px 16px 18px;background:rgba(214,222,226,.82);border-right:3px solid rgba(160,170,175,.6);color:#3f4a52;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.panel h2{font-family:var(--f-judul);font-weight:700;font-size:40px;text-align:center;margin:0;color:#3d4955;letter-spacing:-.01em}
+.panel .tg{font-family:var(--f-ui);font-size:17px;margin:14px 0 0}
+.panel .jm{font-family:var(--f-ui);font-size:13px;opacity:.75;margin-top:2px}
+.pilih{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.pilih button{padding:18px 6px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.7);background:rgba(234,240,242,.8);font-family:var(--f-ui);font-size:14px;color:#3f4a52;display:flex;flex-direction:column;align-items:center;gap:12px}
+.pilih svg{width:30px;height:30px;stroke:#5f6b74;stroke-width:2;fill:none}
+.pilih button[aria-pressed=true]{background:#fff;border-color:var(--sage)}
+.form-ucapan{display:grid;gap:8px;margin-top:12px}
+.form-ucapan[hidden]{display:none}
+.form-ucapan input,.form-ucapan textarea{width:100%;padding:11px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.8);background:rgba(244,247,248,.9);font-family:var(--f-ui);font-size:14px;color:#333}
+.form-ucapan textarea{min-height:80px;resize:vertical}
+.form-ucapan button{padding:11px;border:0;border-radius:8px;background:var(--sage);color:#fff;font-family:var(--f-ui);font-weight:600;font-size:14px}
+.catatan{font-family:var(--f-ui);font-size:12px;margin:0;min-height:1em}
+.panel h4{font-family:var(--f-ui);font-weight:600;font-size:14px;margin:20px 0 10px}
+.dinding{display:grid;gap:8px;max-height:300px;overflow-y:auto}
+.dinding article,.dinding .kosong{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:rgba(234,240,242,.75);border:1px solid rgba(255,255,255,.6);font-family:var(--f-ui);font-size:13px}
+.dinding .kosong{display:block;text-align:center;opacity:.8;margin:0}
+.dinding .av{flex:0 0 30px;height:30px;border-radius:50%;background:rgba(255,255,255,.75);display:grid;place-items:center;font-size:11px;color:#59636b}
+.dinding b{display:block;font-weight:500}
+.dinding span{display:block;opacity:.7;margin-top:2px;white-space:pre-wrap}
+
+/* ---------- 8. galeri ---------- */
+.galeri{padding:40px 0 50px;text-align:center}
+.galeri .caps{font-size:30px}
+.mozaik{position:relative;margin:34px 18px 0;display:grid;gap:4px;grid-template-columns:1fr 2fr;grid-template-rows:150px 150px;grid-template-areas:"a b" "c b"}
+.mozaik.dua{margin-top:4px;grid-template-columns:2fr 1fr;grid-template-rows:96px 128px;grid-template-areas:"a b" "a c"}
+.mozaik div{background:#cfd2c4;display:grid;place-items:center}
+.mozaik div:nth-child(1){grid-area:a}.mozaik div:nth-child(2){grid-area:b}.mozaik div:nth-child(3){grid-area:c}
+.coret{position:absolute;pointer-events:none;z-index:2}
+.coret svg{width:100%;height:auto;display:block;overflow:visible}
+
+/* ---------- 9. see you there ---------- */
+.sampai{min-height:720px;padding:60px 0 0;text-align:center}
+.sampai .judul-kuas{position:relative;font-size:84px;line-height:.9;transform:rotate(-12deg);margin-top:10px;z-index:2}
+.sampai .judul-kuas .a{display:block;text-align:left;padding-left:8px;margin-top:60px}
+.sampai .judul-kuas .b{position:absolute;right:6px;top:-40px}
+.hitung{position:relative;display:flex;justify-content:center;gap:4px;margin-top:-80px;font-family:var(--f-angka);color:#4a4f45}
+.hitung div{display:flex;flex-direction:column;align-items:center;min-width:56px}
+.hitung b{font-weight:400;font-size:46px;line-height:1}
+.hitung i{font-style:normal;font-size:46px;line-height:1;opacity:.9}
+.hitung span{font-size:12px;margin-top:4px;letter-spacing:.02em}
+.hitung div.det b{color:var(--teks-hijau)}
+.sampai .pw{position:relative;font-size:46px;color:var(--teks-hijau);margin-top:44px}
+.sampai .bukit{height:48%}
+.sampai .pasangan{position:absolute;left:50%;bottom:6%;width:56%;transform:translateX(-50%)}
+.sampai .daisy-lapis{height:12%}
+.hipo{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 0 26px;background:var(--sage);color:#fff}
+.hipo small{font-size:10px;letter-spacing:.18em;opacity:.85}
+.hipo img{width:100px;height:auto;filter:brightness(0) invert(1);opacity:.9}
+
+/* ---------- animasi muncul ---------- */
+.muncul{opacity:0;transform:translateY(24px);transition:opacity 1s ease,transform 1s ease}
+.muncul.zoom{transform:scale(.9)}
+.muncul.terlihat{opacity:1;transform:none}
+.judul-kuas.muncul{transform:rotate(-8deg) translateY(20px)}
+.judul-kuas.muncul.terlihat{transform:rotate(-8deg)}
+
+#tMusik{position:fixed;right:14px;bottom:16px;z-index:40;width:42px;height:42px;border-radius:50%;border:0;background:var(--kuning);display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+#tMusik[hidden]{display:none}
+#tMusik svg{width:20px;height:20px;fill:var(--sage-gelap)}
+#tMusik.main svg{animation:putar 4s linear infinite}
+@keyframes putar{to{transform:rotate(360deg)}}
+@media (min-width:900px){#tMusik{right:calc(50% - var(--kolom)/2 + 14px)}}
+@media (prefers-reduced-motion:reduce){.muncul{transition:none;opacity:1;transform:none}#tMusik svg{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- simbol bersama: ilustrasi Zaki & Anita, daisy -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="gWB"><g stroke="#4a3426" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"> <path d="M548 740 C536 880 530 1060 534 1320 L748 1320 C744 1080 738 900 722 740 Z" fill="#F7EFDA"/> <path d="M700 760 C712 900 724 1080 728 1320 L748 1320 C744 1080 738 900 722 740 Z" fill="#E6D8B6" stroke="none"/> <path d="M548 1070 Q644 1050 738 1070 L740 1150 Q720.7 1180 705.3 1150 Q690.0 1180 674.7 1150 Q659.3 1180 644.0 1150 Q628.7 1180 613.3 1150 Q598.0 1180 582.7 1150 Q567.3 1180 552.0 1150 Z" fill="#F6E5B0" stroke="#B8892A" stroke-width="2.5"/> <path d="M706.7 1144 q-6 -22 14 -26 q20 4 14 26" fill="none" stroke="#B8892A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="720.7" cy="1126" r="4" fill="#B8892A"/> <path d="M712.7 1154 q8 10 16 0" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M676.0 1144 q-6 -22 14 -26 q20 4 14 26" fill="none" stroke="#B8892A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="690.0" cy="1126" r="4" fill="#B8892A"/> <path d="M682.0 1154 q8 10 16 0" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M645.3 1144 q-6 -22 14 -26 q20 4 14 26" fill="none" stroke="#B8892A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="659.3" cy="1126" r="4" fill="#B8892A"/> <path d="M651.3 1154 q8 10 16 0" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M614.7 1144 q-6 -22 14 -26 q20 4 14 26" fill="none" stroke="#B8892A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="628.7" cy="1126" r="4" fill="#B8892A"/> <path d="M620.7 1154 q8 10 16 0" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M584.0 1144 q-6 -22 14 -26 q20 4 14 26" fill="none" stroke="#B8892A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="598.0" cy="1126" r="4" fill="#B8892A"/> <path d="M590.0 1154 q8 10 16 0" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M553.3 1144 q-6 -22 14 -26 q20 4 14 26" fill="none" stroke="#B8892A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="567.3" cy="1126" r="4" fill="#B8892A"/> <path d="M559.3 1154 q8 10 16 0" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M562 1100 q8 -14 16 0 q-8 10 -16 0z" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M590 1100 q8 -14 16 0 q-8 10 -16 0z" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M618 1100 q8 -14 16 0 q-8 10 -16 0z" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M646 1100 q8 -14 16 0 q-8 10 -16 0z" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M674 1100 q8 -14 16 0 q-8 10 -16 0z" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M702 1100 q8 -14 16 0 q-8 10 -16 0z" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M730 1100 q8 -14 16 0 q-8 10 -16 0z" fill="none" stroke="#B8892A" stroke-width="2"/> <path d="M600 1180 Q596 1250 598 1320" fill="none" stroke="#E6D8B6" stroke-width="3"/> <path d="M680 1180 Q688 1250 690 1320" fill="none" stroke="#E6D8B6" stroke-width="3"/> <path d="M560 760 C540 800 532 860 528 900 L556 912 C562 870 570 820 584 790 Z" fill="#F7EFDA"/> </g></g>
+    <g id="gM"><g stroke="#4a3426" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"> <path d="M345 1086 L340 1320 L436 1320 L441 1110 L447 1320 L540 1320 L538 1086 Z" fill="#F7EFDA"/> <path d="M441 1110 L447 1320" stroke="#E6D8B6"/> <path d="M418 540 L418 602 L462 602 L462 540 Z" fill="#BE8460"/> <path d="M342 650 C352 618 392 604 418 598 L462 598 C490 604 528 618 540 650 L552 900 C510 912 370 912 330 900 Z" fill="#F7EFDA"/> <path d="M500 615 C522 625 536 640 540 650 L552 900 C540 903 528 905 514 906 C520 820 516 700 500 615 Z" fill="#E6D8B6" stroke="none"/> <path d="M440 626 C446 700 450 800 452 906" fill="none"/> <path d="M440 626 C420 640 400 650 388 660" fill="none" stroke="#E6D8B6" stroke-width="3"/> <path d="M372 706 L412 706" fill="none"/> <path d="M452 712 C430 760 392 752 392 708" fill="none" stroke="#E3B94B" stroke-width="5"/> <path d="M452 712 C430 760 392 752 392 708" fill="none" stroke="#B8892A" stroke-width="1.5"/> <circle cx="445.0" cy="660" r="6" fill="#E3B94B" stroke="#4a3426" stroke-width="2"/><circle cx="446.5" cy="702" r="6" fill="#E3B94B" stroke="#4a3426" stroke-width="2"/><circle cx="448.0" cy="744" r="6" fill="#E3B94B" stroke="#4a3426" stroke-width="2"/><circle cx="449.5" cy="786" r="6" fill="#E3B94B" stroke="#4a3426" stroke-width="2"/><circle cx="451.0" cy="828" r="6" fill="#E3B94B" stroke="#4a3426" stroke-width="2"/> <path d="M410 586 L410 616 Q440 630 470 616 L470 586 Q440 598 410 586 Z" fill="#F7EFDA"/> <path d="M416 600 Q440 612 464 600" fill="none" stroke="#E3B94B" stroke-width="3"/> <path d="M345 646 C322 690 314 800 318 878 L354 884 C356 800 362 720 376 680 Z" fill="#F7EFDA"/> <path d="M318 860 L354 866" stroke="#E3B94B" stroke-width="5"/> <path d="M322 884 C314 900 318 926 336 930 C352 932 360 916 356 888 Z" fill="#D59E77"/> <path d="M333 878 L550 878 L556 1092 Q442 1110 326 1092 Z" fill="#B3262E" stroke="#4a3426" stroke-width="3" stroke-linejoin="round"/> <path d="M333 878 L550 878 L551 906 L332 906 Z" fill="#E3B94B" stroke="#4a3426" stroke-width="2.5"/> <path d="M328 1058 Q442 1072 555 1058 L556 1092 Q442 1110 326 1092 Z" fill="#E3B94B" stroke="#4a3426" stroke-width="2.5"/> <path d="M342.0 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M359.5 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M377.0 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M394.5 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M412.0 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M429.5 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M447.0 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M464.5 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M482.0 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M499.5 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M517.0 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M534.5 892 l7 -8 l7 8 l-7 8z" fill="#B3262E"/> <path d="M334 1088 L344 1064 L354 1088Z" fill="#B3262E" opacity="0.9"/> <path d="M354 1088 L364 1064 L374 1088Z" fill="#B3262E" opacity="0.9"/> <path d="M374 1088 L384 1064 L394 1088Z" fill="#B3262E" opacity="0.9"/> <path d="M394 1092 L404 1064 L414 1092Z" fill="#B3262E" opacity="0.9"/> <path d="M414 1092 L424 1064 L434 1092Z" fill="#B3262E" opacity="0.9"/> <path d="M434 1092 L444 1064 L454 1092Z" fill="#B3262E" opacity="0.9"/> <path d="M454 1092 L464 1064 L474 1092Z" fill="#B3262E" opacity="0.9"/> <path d="M474 1092 L484 1064 L494 1092Z" fill="#B3262E" opacity="0.9"/> <path d="M494 1088 L504 1064 L514 1088Z" fill="#B3262E" opacity="0.9"/> <path d="M514 1088 L524 1064 L534 1088Z" fill="#B3262E" opacity="0.9"/> <path d="M534 1088 L544 1064 L554 1088Z" fill="#B3262E" opacity="0.9"/> <path d="M418 906 L470 906 L476 1060 L412 1060 Z" fill="#F4D987" stroke="#4a3426" stroke-width="2.5"/> <path d="M420 950 L444 920 L468 950 Z" fill="#B3262E" stroke="#B8892A" stroke-width="1.5"/> <circle cx="444" cy="940" r="4" fill="#E3B94B"/> <path d="M420 986 L444 956 L468 986 Z" fill="#B3262E" stroke="#B8892A" stroke-width="1.5"/> <circle cx="444" cy="976" r="4" fill="#E3B94B"/> <path d="M420 1022 L444 992 L468 1022 Z" fill="#B3262E" stroke="#B8892A" stroke-width="1.5"/> <circle cx="444" cy="1012" r="4" fill="#E3B94B"/> <path d="M420 1058 L444 1028 L468 1058 Z" fill="#B3262E" stroke="#B8892A" stroke-width="1.5"/> <circle cx="444" cy="1048" r="4" fill="#E3B94B"/> <path d="M336 995 A34 34 0 0 1 404 995 Z" fill="#F4D987" stroke="#4a3426" stroke-width="2"/> <line x1="370" y1="995" x2="340.0" y2="995.0" stroke="#B3262E" stroke-width="3"/> <line x1="370" y1="995" x2="344.0" y2="980.0" stroke="#B3262E" stroke-width="3"/> <line x1="370" y1="995" x2="355.0" y2="969.0" stroke="#B3262E" stroke-width="3"/> <line x1="370" y1="995" x2="370.0" y2="965.0" stroke="#B3262E" stroke-width="3"/> <line x1="370" y1="995" x2="385.0" y2="969.0" stroke="#B3262E" stroke-width="3"/> <line x1="370" y1="995" x2="396.0" y2="980.0" stroke="#B3262E" stroke-width="3"/> <line x1="370" y1="995" x2="400.0" y2="995.0" stroke="#B3262E" stroke-width="3"/> <circle cx="370" cy="995" r="7" fill="#B3262E"/> <path d="M344 1025 l13 -14 l13 14 l13 -14 l13 14" fill="none" stroke="#F4D987" stroke-width="4" stroke-linejoin="round"/> <path d="M481 995 A34 34 0 0 1 549 995 Z" fill="#F4D987" stroke="#4a3426" stroke-width="2"/> <line x1="515" y1="995" x2="485.0" y2="995.0" stroke="#B3262E" stroke-width="3"/> <line x1="515" y1="995" x2="489.0" y2="980.0" stroke="#B3262E" stroke-width="3"/> <line x1="515" y1="995" x2="500.0" y2="969.0" stroke="#B3262E" stroke-width="3"/> <line x1="515" y1="995" x2="515.0" y2="965.0" stroke="#B3262E" stroke-width="3"/> <line x1="515" y1="995" x2="530.0" y2="969.0" stroke="#B3262E" stroke-width="3"/> <line x1="515" y1="995" x2="541.0" y2="980.0" stroke="#B3262E" stroke-width="3"/> <line x1="515" y1="995" x2="545.0" y2="995.0" stroke="#B3262E" stroke-width="3"/> <circle cx="515" cy="995" r="7" fill="#B3262E"/> <path d="M489 1025 l13 -14 l13 14 l13 -14 l13 14" fill="none" stroke="#F4D987" stroke-width="4" stroke-linejoin="round"/> <circle cx="350" cy="930" r="4" fill="#F4D987"/> <circle cx="395" cy="1030" r="4" fill="#F4D987"/> <circle cx="490" cy="1035" r="4" fill="#F4D987"/> <circle cx="535" cy="930" r="4" fill="#F4D987"/> <circle cx="350" cy="1040" r="4" fill="#F4D987"/> <circle cx="538" cy="1040" r="4" fill="#F4D987"/> <path d="M478 906 Q482 990 486 1080" stroke="#7d1a20" stroke-width="2.5" fill="none" opacity="0.6"/> <path d="M530 642 C552 700 556 800 546 880 L512 884 C516 800 512 720 500 680 Z" fill="#F7EFDA"/> <path d="M512 866 L548 862" stroke="#E3B94B" stroke-width="5"/> </g></g>
+    <g id="gMH"><g stroke="#4a3426" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"> <ellipse cx="366" cy="480" rx="14" ry="21" fill="#D59E77"/> <ellipse cx="514" cy="480" rx="14" ry="21" fill="#D59E77"/> <path d="M368 440 C366 502 392 552 440 564 C488 552 514 502 512 440 C512 410 480 396 440 396 C400 396 368 410 368 440 Z" fill="#D59E77"/> <path d="M488 520 C478 545 462 558 440 564 C470 560 500 535 506 495 Z" fill="#BE8460" stroke="none"/> <path d="M360 466 C348 422 352 386 378 364 L380 348 L396 354 C410 338 430 334 446 340 L458 326 L468 342 C488 340 508 350 516 368 L528 366 C532 394 530 430 520 466 C516 446 512 430 506 420 C492 428 470 424 456 414 C438 424 410 426 384 420 C374 432 366 448 360 466 Z" fill="#1d1816"/> <path d="M392 372 C420 356 456 352 486 362" fill="none" stroke="#4a4140" stroke-width="3"/> <path d="M410 386 C430 374 456 372 476 380" fill="none" stroke="#4a4140" stroke-width="2.5"/> <path d="M394 441 Q410 433 428 438" fill="none" stroke="#1d1816" stroke-width="6"/> <path d="M452 438 Q470 433 486 441" fill="none" stroke="#1d1816" stroke-width="6"/> <ellipse cx="411" cy="467" rx="7" ry="8.5" fill="#2a1d18" stroke="none"/> <ellipse cx="469" cy="467" rx="7" ry="8.5" fill="#2a1d18" stroke="none"/> <circle cx="414" cy="463" r="2.6" fill="#fff" stroke="none"/> <circle cx="472" cy="463" r="2.6" fill="#fff" stroke="none"/> <path d="M400 478 Q411 474 422 478" fill="none" stroke="#BE8460" stroke-width="2.5"/> <path d="M458 478 Q469 474 480 478" fill="none" stroke="#BE8460" stroke-width="2.5"/> <rect x="384" y="446" width="52" height="40" rx="13" fill="#ffffff" fill-opacity="0.16" stroke="#231a17" stroke-width="5.5"/> <rect x="444" y="446" width="52" height="40" rx="13" fill="#ffffff" fill-opacity="0.16" stroke="#231a17" stroke-width="5.5"/> <path d="M436 458 Q440 452 444 458" fill="none" stroke="#231a17" stroke-width="5"/> <path d="M384 456 L368 462" stroke="#231a17" stroke-width="5"/> <path d="M496 456 L512 462" stroke="#231a17" stroke-width="5"/> <path d="M390 452 L400 452" stroke="#fff" stroke-width="2.5" opacity="0.8"/> <path d="M450 452 L460 452" stroke="#fff" stroke-width="2.5" opacity="0.8"/> <path d="M440 480 Q432 496 438 500 Q444 502 448 498" fill="none" stroke="#BE8460" stroke-width="3"/> <ellipse cx="398" cy="505" rx="13" ry="7" fill="#e07b6a" opacity="0.35" stroke="none"/> <ellipse cx="482" cy="505" rx="13" ry="7" fill="#e07b6a" opacity="0.35" stroke="none"/> <path d="M402 510 C418 518 462 518 478 510 C472 546 408 546 402 510 Z" fill="#6b2422"/> <path d="M405 512 C420 519 460 519 475 512 C473 520 470 524 466 526 C450 528 430 528 414 526 C410 523 407 519 405 512 Z" fill="#ffffff" stroke="none"/> <path d="M424 538 Q440 530 456 538 Q440 543 424 538 Z" fill="#d86b6b" stroke="none"/> <path d="M402 510 C418 518 462 518 478 510 C472 546 408 546 402 510 Z" fill="none"/> <path d="M396 506 Q400 510 403 511" fill="none" stroke="#BE8460" stroke-width="2.5"/> <path d="M484 506 Q480 510 477 511" fill="none" stroke="#BE8460" stroke-width="2.5"/> </g></g>
+    <g id="gWH"><g transform="translate(-14 -6) rotate(-10 620 640) translate(620 600) scale(1.17) translate(-620 -600)" stroke="#4a3426" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"> <path d="M620 452 C568 452 544 494 544 546 C544 594 558 624 542 664 C528 704 526 744 540 778 L724 778 C734 730 716 688 702 648 C692 614 698 586 696 546 C694 494 672 452 620 452 Z" fill="#FFFCF3"/> <path d="M676 470 C690 490 696 516 696 546 C698 586 692 614 702 648 C716 688 734 730 724 778 L690 778 C700 730 690 690 680 650 C672 610 680 560 676 520 Z" fill="#E6D8B6" stroke="none" opacity="0.8"/> <path d="M570 640 C590 690 600 730 596 774" fill="none" stroke="#E6D8B6" stroke-width="3"/> <path d="M640 640 C650 690 660 730 662 774" fill="none" stroke="#E6D8B6" stroke-width="3"/> <path d="M544 546 C544 594 558 624 542 664 C528 704 526 744 540 778" fill="none"/> <path d="M572 532 C572 502 594 490 620 490 C646 490 668 502 668 532 C668 576 648 606 620 608 C592 606 572 576 572 532 Z" fill="#EDBD98"/> <path d="M574 520 C584 498 602 490 620 490 C638 490 656 498 666 520 C654 506 638 500 620 500 C602 500 586 506 574 520 Z" fill="#F3E6C6" stroke-width="2"/> <path d="M572 512 C590 492 650 492 668 512" fill="none" stroke="#E3B94B" stroke-width="5"/> <circle cx="659.8" cy="514.0" r="4" fill="#E3B94B" stroke="#B8892A" stroke-width="1.5"/><circle cx="649.6" cy="505.5" r="4" fill="#E3B94B" stroke="#B8892A" stroke-width="1.5"/><circle cx="635.7" cy="499.9" r="4" fill="#E3B94B" stroke="#B8892A" stroke-width="1.5"/><circle cx="620.0" cy="498.0" r="4" fill="#E3B94B" stroke="#B8892A" stroke-width="1.5"/><circle cx="604.3" cy="499.9" r="4" fill="#E3B94B" stroke="#B8892A" stroke-width="1.5"/><circle cx="590.4" cy="505.5" r="4" fill="#E3B94B" stroke="#B8892A" stroke-width="1.5"/><circle cx="580.2" cy="514.0" r="4" fill="#E3B94B" stroke="#B8892A" stroke-width="1.5"/> <path d="M620 488 l-7 -10 l7 -10 l7 10 z" fill="#E3B94B" stroke="#B8892A" stroke-width="2"/> <path d="M590 524 Q600 518 610 522" fill="none" stroke="#3b2a22" stroke-width="3.5"/> <path d="M630 522 Q640 518 650 524" fill="none" stroke="#3b2a22" stroke-width="3.5"/> <ellipse cx="600" cy="541" rx="6.5" ry="7.5" fill="#2a1d18" stroke="none"/> <ellipse cx="640" cy="541" rx="6.5" ry="7.5" fill="#2a1d18" stroke="none"/> <circle cx="602.5" cy="538" r="2.3" fill="#fff" stroke="none"/> <circle cx="642.5" cy="538" r="2.3" fill="#fff" stroke="none"/> <path d="M594 535 L588 531" fill="none" stroke="#2a1d18" stroke-width="2.5"/> <path d="M646 535 L652 531" fill="none" stroke="#2a1d18" stroke-width="2.5"/> <path d="M592 551 Q600 547 608 551" fill="none" stroke="#d9a07c" stroke-width="2"/><path d="M632 551 Q640 547 648 551" fill="none" stroke="#d9a07c" stroke-width="2"/> <path d="M620 552 Q615 562 620 565 Q624 566 627 563" fill="none" stroke="#D9A07C" stroke-width="2.5"/> <ellipse cx="591" cy="566" rx="11" ry="6.5" fill="#f08a8a" opacity="0.5" stroke="none"/> <ellipse cx="649" cy="566" rx="11" ry="6.5" fill="#f08a8a" opacity="0.5" stroke="none"/> <path d="M600 575 C610 581 630 581 640 575 C636 598 604 598 600 575 Z" fill="#6b2422"/> <path d="M602 577 C612 582 628 582 638 577 C637 582 635 585 632 586 C622 588 616 588 608 586 C605 584 603 581 602 577 Z" fill="#fff" stroke="none"/> <path d="M600 575 C610 581 630 581 640 575 C636 598 604 598 600 575 Z" fill="none"/> </g></g>
+    <g id="gBQ"><g> <path d="M640 880 C630 930 650 970 632 1040 L652 1046 C668 980 650 930 660 884 Z" fill="#B3262E" stroke="#4a3426" stroke-width="2.5" stroke-linejoin="round"/> <path d="M662 882 C684 930 670 990 694 1050 L714 1042 C692 990 704 930 680 880 Z" fill="#9CC2EA" stroke="#4a3426" stroke-width="2.5" stroke-linejoin="round"/> <path d="M650 880 C620 900 600 930 610 990 L628 984 C622 940 640 908 664 892 Z" fill="#8E2420" stroke="#4a3426" stroke-width="2.5" stroke-linejoin="round"/> <path d="M636 868 Q656 884 676 868 L680 890 Q656 902 632 890 Z" fill="#B3262E" stroke="#4a3426" stroke-width="2.5"/> <g transform="rotate(190 599.75 826.5)"><path d="M599.75 826.5 Q630.75 810.5 661.75 826.5 Q630.75 842.5 599.75 826.5Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M603.75 826.5 L655.75 826.5" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(220 608.0 799.0)"><path d="M608.0 799.0 Q638.0 783.0 668.0 799.0 Q638.0 815.0 608.0 799.0Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M612.0 799.0 L662.0 799.0" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(255 635.5 779.75)"><path d="M635.5 779.75 Q664.5 763.75 693.5 779.75 Q664.5 795.75 635.5 779.75Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M639.5 779.75 L687.5 779.75" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(290 674.0 779.75)"><path d="M674.0 779.75 Q704.0 763.75 734.0 779.75 Q704.0 795.75 674.0 779.75Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M678.0 779.75 L728.0 779.75" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(320 698.75 801.75)"><path d="M698.75 801.75 Q729.75 785.75 760.75 801.75 Q729.75 817.75 698.75 801.75Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M702.75 801.75 L754.75 801.75" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(350 704.25 834.75)"><path d="M704.25 834.75 Q734.25 818.75 764.25 834.75 Q734.25 850.75 704.25 834.75Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M708.25 834.75 L758.25 834.75" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(20 690.5 859.5)"><path d="M690.5 859.5 Q718.0 843.5 745.5 859.5 Q718.0 875.5 690.5 859.5Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M694.5 859.5 L739.5 859.5" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(160 613.5 856.75)"><path d="M613.5 856.75 Q641.0 840.75 668.5 856.75 Q641.0 872.75 613.5 856.75Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M617.5 856.75 L662.5 856.75" stroke="#3f6a3d" stroke-width="1.6"/></g> <g transform="rotate(90 652.0 870.5)"><path d="M652.0 870.5 Q677.0 854.5 702.0 870.5 Q677.0 886.5 652.0 870.5Z" fill="#5E8C5A" stroke="#4a3426" stroke-width="2.2"/><path d="M656.0 870.5 L696.0 870.5" stroke="#3f6a3d" stroke-width="1.6"/></g> <circle cx="614" cy="810" r="30" fill="#C0392B" stroke="#4a3426" stroke-width="2.5"/><path d="M597.5 807.0 Q614 783.0 632.0 808.5 Q620.0 826.5 603.5 820.5" fill="none" stroke="#8E2420" stroke-width="3" stroke-linecap="round"/><path d="M608.0 808.5 Q617.0 798.0 621.5 811.5" fill="none" stroke="#8E2420" stroke-width="2.5" stroke-linecap="round"/> <circle cx="682" cy="802" r="28" fill="#C0392B" stroke="#4a3426" stroke-width="2.5"/><path d="M666.6 799.2 Q682 776.8 698.8 800.6 Q687.6 817.4 672.2 811.8" fill="none" stroke="#8E2420" stroke-width="3" stroke-linecap="round"/><path d="M676.4 800.6 Q684.8 790.8 689.0 803.4" fill="none" stroke="#8E2420" stroke-width="2.5" stroke-linecap="round"/> <circle cx="657" cy="852" r="31" fill="#C0392B" stroke="#4a3426" stroke-width="2.5"/><path d="M639.95 848.9 Q657 824.1 675.6 850.45 Q663.2 869.05 646.15 862.85" fill="none" stroke="#8E2420" stroke-width="3" stroke-linecap="round"/><path d="M650.8 850.45 Q660.1 839.6 664.75 853.55" fill="none" stroke="#8E2420" stroke-width="2.5" stroke-linecap="round"/> <circle cx="590" cy="860" r="22" fill="#E0533C" stroke="#4a3426" stroke-width="2.5"/><path d="M577.9 857.8 Q590 840.2 603.2 858.9 Q594.4 872.1 582.3 867.7" fill="none" stroke="#A8322A" stroke-width="3" stroke-linecap="round"/><path d="M585.6 858.9 Q592.2 851.2 595.5 861.1" fill="none" stroke="#A8322A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="718" cy="846" r="22" fill="#E0533C" stroke="#4a3426" stroke-width="2.5"/><path d="M705.9 843.8 Q718 826.2 731.2 844.9 Q722.4 858.1 710.3 853.7" fill="none" stroke="#A8322A" stroke-width="3" stroke-linecap="round"/><path d="M713.6 844.9 Q720.2 837.2 723.5 847.1" fill="none" stroke="#A8322A" stroke-width="2.5" stroke-linecap="round"/> <circle cx="647.0" cy="761.2" r="8.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="655.4" cy="767.3" r="8.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="652.2" cy="777.1" r="8.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="641.8" cy="777.1" r="8.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="638.6" cy="767.3" r="8.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="647" cy="770" r="4.8" fill="#F6D36B" stroke="#4a3426" stroke-width="1.5"/> <circle cx="714.0" cy="772.9" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="720.8" cy="777.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="718.2" cy="785.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="709.8" cy="785.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="707.2" cy="777.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="714" cy="780" r="3.9" fill="#E08A2E" stroke="#4a3426" stroke-width="1.5"/> <circle cx="582.0" cy="784.9" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="588.8" cy="789.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="586.2" cy="797.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="577.8" cy="797.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="575.2" cy="789.8" r="6.5" fill="#F7D27A" stroke="#4a3426" stroke-width="1.8"/><circle cx="582" cy="792" r="3.9" fill="#E08A2E" stroke="#4a3426" stroke-width="1.5"/> <circle cx="692.0" cy="882.3" r="7.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="699.3" cy="887.6" r="7.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="696.5" cy="896.2" r="7.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="687.5" cy="896.2" r="7.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="684.7" cy="887.6" r="7.0" fill="#9CC2EA" stroke="#4a3426" stroke-width="1.8"/><circle cx="692" cy="890" r="4.2" fill="#F6D36B" stroke="#4a3426" stroke-width="1.5"/> <circle cx="622.0" cy="883.4" r="6.0" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="628.3" cy="888.0" r="6.0" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="625.9" cy="895.3" r="6.0" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="618.1" cy="895.3" r="6.0" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="615.7" cy="888.0" r="6.0" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="622" cy="890" r="3.6" fill="#F6D36B" stroke="#4a3426" stroke-width="1.5"/> <circle cx="737.0" cy="811.0" r="5.5" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="742.8" cy="815.1" r="5.5" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="740.6" cy="821.9" r="5.5" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="733.4" cy="821.9" r="5.5" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="731.2" cy="815.1" r="5.5" fill="#FFFFFF" stroke="#4a3426" stroke-width="1.8"/><circle cx="737" cy="817" r="3.3" fill="#F6D36B" stroke="#4a3426" stroke-width="1.5"/> <circle cx="637" cy="822" r="4" fill="#fff6c8" stroke="#4a3426" stroke-width="1.2"/> <circle cx="702" cy="827" r="4" fill="#fff6c8" stroke="#4a3426" stroke-width="1.2"/> <circle cx="607" cy="892" r="4" fill="#fff6c8" stroke="#4a3426" stroke-width="1.2"/> <path d="M672 872 C686 880 694 896 684 906 C674 912 660 904 658 892 Z" fill="#EDBD98" stroke="#4a3426" stroke-width="3" stroke-linejoin="round"/> </g></g>
+    <symbol id="pasangan" viewBox="270 290 540 1010"><use href="#gWB"/><use href="#gM"/><use href="#gMH"/><use href="#gWH"/><use href="#gBQ"/></symbol>
+    <radialGradient id="gPetal" cx=".5" cy=".9" r=".9"><stop offset="0" stop-color="#e9e6d8"/><stop offset=".55" stop-color="#fbfaf4"/><stop offset="1" stop-color="#ffffff"/></radialGradient>
+    <radialGradient id="gInti" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#f6dc6a"/><stop offset="1" stop-color="#d3a52a"/></radialGradient>
+    <symbol id="daisy" viewBox="-50 -50 100 100" overflow="visible">
+      <g id="kelopak"></g>
+      <circle r="8.5" fill="url(#gInti)"/><circle r="8.5" fill="none" stroke="#c49327" stroke-width="1" opacity=".6"/>
+    </symbol>
+    <symbol id="kilau" viewBox="0 0 20 20"><path d="M10 0c1 6 4 9 10 10-6 1-9 4-10 10-1-6-4-9-10-10 6-1 9-4 10-10z" fill="#fff"/></symbol>
+  </defs>
+</svg>
+
+<!-- SAMPUL -->
+<div id="sampul">
+  <div class="isi">
+    <div class="judul-kuas kuas"><span>You're</span><span class="l2">Invited!</span></div>
+    <div class="kartu-gambar">
+      <svg class="pasangan" viewBox="0 0 540 1010" aria-label="Ilustrasi Zaki dan Anita"><use href="#pasangan" width="540" height="1010"/></svg>
+      <div class="daisy-lapis" data-daisy="kartu" data-seed="2"></div>
+    </div>
+    <div class="nama kuas">Zaki &amp; Anita</div>
+    <div class="tgl">Sabtu, 27 Maret 2027</div>
+    <button type="button" class="tombol-kuning" id="bukaUndangan">Open Invitation</button>
+    <div class="tamu">Kepada Yth. Bapak/Ibu/Saudara/i<b id="namaTamu">Tamu Undangan</b></div>
+  </div>
+</div>
+
+<main>
+  <!-- 1. we're getting married + lagu -->
+  <section class="lagu">
+    <div style="position:relative">
+      <div class="judul-kuas kuas"><span class="a">We're &nbsp;Getting</span><span class="b">Married!</span></div>
+      <div class="kartu-gambar langit">
+        <div class="awan"></div>
+        <div class="bukit" style="height:38%" data-bukit="1"></div>
+        <svg class="pasangan" viewBox="0 0 540 1010" style="bottom:-30%"><use href="#pasangan" width="540" height="1010"/></svg>
+        <div class="daisy-lapis" data-daisy="kartu" data-seed="7"></div>
+      </div>
+    </div>
+    <p class="ajak">Click “play” button to listen our song..</p>
+    <div class="pemutar">
+      <div class="bar" id="bar"><i id="titik"></i></div>
+      <div class="kontrol">
+        <button type="button" class="redup" aria-label="Acak"><svg viewBox="0 0 24 24"><path d="M16 4h4v4l-1.5-1.5-3.7 3.7-1.4-1.4 3.7-3.7zM4 6.6 5.4 5.2 18.5 18.3 20 17v4h-4l1.1-1.1zM4 18.6l5.3-5.3 1.4 1.4-5.3 5.3z"/></svg></button>
+        <button type="button" id="pMundur" aria-label="Ulang dari awal"><svg viewBox="0 0 24 24"><path d="M5 4h2.4v16H5zM20 4v16L8.5 12z"/></svg></button>
+        <button type="button" id="pPutar" class="utama" aria-label="Putar atau jeda lagu"><svg viewBox="0 0 24 24" id="ikonPutar"><path d="M8 5v14l11-7z"/></svg></button>
+        <button type="button" id="pMaju" aria-label="Lagu berikutnya"><svg viewBox="0 0 24 24"><path d="M16.6 4H19v16h-2.4zM4 4v16l11.5-8z"/></svg></button>
+        <button type="button" id="pUlang" aria-label="Ulangi lagu"><svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2zM17 17H7v-3l-4 4 4 4v-3h12v-6h-2z"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ayat + nama -->
+  <section class="ayat langit">
+    <div class="awan"></div>
+    <blockquote class="muncul">“And one of His signs is that He created for you spouses from among yourselves so that you may find comfort in them. And He has placed between you compassion and mercy. Surely in this are signs for people who reflect.”</blockquote>
+    <cite class="muncul">Surah Ar-Rum 21</cite>
+    <div class="nama-besar kuas muncul"><span>Zaki</span><span class="w">&amp;Anita</span></div>
+    <div class="bukit" data-bukit="2"></div>
+    <svg class="pasangan" viewBox="0 0 540 1010"><use href="#pasangan" width="540" height="1010"/></svg>
+    <div class="daisy-lapis" data-daisy="padang" data-seed="13"></div>
+  </section>
+
+  <!-- 3. mempelai -->
+  <section class="mempelai">
+    <svg class="loop" data-loop="#fff"></svg>
+    <div class="bismillah muncul">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+    <p class="salam muncul">Assalamu’alaikum Warahmatullahi Wabarakatuh.</p>
+    <p class="undang muncul">With the blessing of Allah, together with our families, we invite you to join us as we exchange our wedding vows.</p>
+    <div class="judul-bg muncul"><span class="the">The</span><p class="caps">BRIDE &amp; GROOM</p></div>
+
+    <div class="figur wanita muncul zoom">
+      <svg class="gelombang" data-gelombang="1"></svg>
+      <div class="foto ph"></div>
+      <div class="sketsa" data-sketsa="wanita"></div>
+    </div>
+    <h3 class="muncul" data-isi="wanita.nama">Anita Nurul Syahrudin</h3>
+    <p class="ortu muncul">The beloved daughter of<br><span data-isi="wanita.ayah">Mr. Iding Sahrudin</span></p>
+
+    <div class="dan muncul">&amp;</div>
+
+    <div class="figur pria muncul zoom">
+      <svg class="gelombang" data-gelombang="1"></svg>
+      <div class="foto ph"></div>
+      <div class="sketsa" data-sketsa="pria"></div>
+    </div>
+    <h3 class="muncul" data-isi="pria.nama">Firdian Zaki Putra Wibowo</h3>
+    <p class="ortu muncul">The beloved son of<br><span data-isi="pria.ayah">Mr. Wahyudi Satria Wibowo</span></p>
+    <svg class="loop" data-loop="#fff" style="margin-top:56px"></svg>
+  </section>
+
+  <!-- 4. save the date + akad -->
+  <section class="std">
+    <div class="awan"></div>
+    <h2 class="kuas muncul"><span>Save</span><span><span class="the2">the</span>Date</span></h2>
+    <div class="bulan muncul">March</div>
+    <div class="deret muncul"><span>25</span><span>26</span><span class="hati">27<svg viewBox="0 0 100 100"><path d="M50 92C40 70 6 52 8 26 10 6 34 2 46 22c2 3 3 6 4 8 4-14 14-26 28-26 18 0 24 22 12 40C82 58 60 70 50 92z" fill="none" stroke="#c0142b" stroke-width="1.6"/></svg></span><span>28</span><span>29</span></div>
+    <div class="tahun muncul">2027</div>
+    <svg class="masjid muncul" id="masjid" viewBox="0 0 340 150" aria-hidden="true"></svg>
+  </section>
+  <section class="acara">
+    <h3 class="muncul">Akad Nikah</h3>
+    <p class="hari muncul">Saturday, 27<sup style="font-size:9px">th</sup> March 2027</p>
+    <p class="muncul" data-isi="akad">08.00 - 11.00 WIB</p>
+    <p class="tempat muncul" data-isi="tempat">Masjid Al Azhom</p>
+    <p class="muncul" data-isi="alamat">Jl. Satria Sudirman, Kota Tangerang, Banten</p>
+    <a class="tombol-kuning kecil muncul" id="peta" href="#" target="_blank" rel="noopener">See Location</a>
+    <h3 class="muncul" style="margin-top:56px">Dress Code</h3>
+    <p class="kode muncul" data-isi="dressCode">Rapi &amp; Sopan</p>
+    <div class="swatch muncul"><i style="background:var(--sage)"></i><i style="background:var(--kuning-2)"></i><i style="background:var(--khaki)"></i></div>
+  </section>
+
+  <!-- 5. rangkaian acara -->
+  <section class="rincian">
+    <div class="kartu-gerigi muncul">
+      <svg class="latar" id="gerigi" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <span class="the">The</span>
+      <p class="caps">WEDDING<br>DETAILS</p>
+      <div class="lini-acara" id="rundown"></div>
+    </div>
+  </section>
+
+  <!-- 6. wedding gift -->
+  <section class="hadiah">
+    <span class="the muncul" style="color:var(--teks-hijau)">The</span>
+    <p class="caps muncul">WEDDING<br>GIFT</p>
+    <p class="intro muncul">Your presence is the most meaningful gift of all.<br>But if you'd like to give something extra, we kindly prefer cash gifts to help us begin our next chapter together.<br><br>Thank you!</p>
+    <div id="rekening"></div>
+    <p class="kirim muncul">Thinking of sending a gift? Just drop us a message on WhatsApp first and we'll share our address with you!</p>
+    <a class="tombol-kuning muncul" id="tombolWa" href="#" target="_blank" rel="noopener">Whatsapp Number</a>
+  </section>
+
+  <!-- 7. rsvp -->
+  <section class="rsvp langit">
+    <div class="awan"></div>
+    <svg class="loop" data-loop="#5d6a4b" style="position:relative"></svg>
+    <div class="ruang">
+      <div class="panel muncul">
+        <h2>You're Invited!</h2>
+        <div class="tg">Sabtu, 27 Maret</div>
+        <div class="jm">08.00</div>
+        <div class="pilih">
+          <button type="button" data-hadir="hadir" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Hadir</button>
+          <button type="button" data-hadir="tidak" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>Tidak Hadir</button>
+        </div>
+        <form class="form-ucapan" id="formRsvp" hidden>
+          <input id="rNama" required placeholder="Nama" autocomplete="name" maxlength="80">
+          <textarea id="rPesan" placeholder="Tulis ucapan &amp; doa" maxlength="600"></textarea>
+          <button type="submit">Kirim</button>
+          <p class="catatan" id="catatanRsvp" role="status"></p>
+        </form>
+        <h4>Dinding tamu</h4>
+        <div class="dinding" id="ucapan"><p class="kosong">Memuat ucapan…</p></div>
+      </div>
+    </div>
+    <svg class="loop" data-loop="#5d6a4b" style="position:relative"></svg>
+  </section>
+
+  <!-- 8. galeri -->
+  <section class="galeri">
+    <span class="the muncul">The</span>
+    <p class="caps muncul">GALLERY</p>
+    <div style="position:relative">
+      <div class="coret" data-coret="pita" style="left:2px;top:-24px;width:46%"></div>
+      <div class="coret sketsa" data-sketsa="wanita" style="right:-26px;top:-130px;width:24%"></div>
+      <div class="mozaik muncul"><div class="ph"></div><div class="ph"></div><div class="ph"></div></div>
+      <div class="mozaik dua muncul"><div class="ph"></div><div class="ph"></div><div class="ph"></div></div>
+      <div class="coret sketsa" data-sketsa="pria" style="left:-30px;bottom:-30px;width:22%"></div>
+      <div class="coret" data-coret="ulir" style="right:4px;bottom:-30px;width:34%"></div>
+    </div>
+  </section>
+
+  <!-- 9. see you there -->
+  <section class="sampai langit">
+    <div class="awan"></div>
+    <div class="judul-kuas kuas"><span class="a">See you</span><span class="b">there!</span></div>
+    <div class="hitung" aria-label="Hitung mundur">
+      <div><b id="hHari">0</b><span>DAYS</span></div><i>:</i>
+      <div><b id="hJam">00</b><span>HOURS</span></div><i>:</i>
+      <div><b id="hMenit">00</b><span>MINUTES</span></div><i>:</i>
+      <div class="det"><b id="hDetik">00</b><span>SECONDS</span></div>
+    </div>
+    <div class="pw kuas muncul">Zaki &amp; Anita</div>
+    <div class="bukit" data-bukit="3"></div>
+    <svg class="pasangan" viewBox="0 0 540 1010"><use href="#pasangan" width="540" height="1010"/></svg>
+    <div class="daisy-lapis" data-daisy="padang" data-seed="29"></div>
+  </section>
+  <div class="hipo"><small>MADE BY</small><img src="../assets/hipo-plus.png" alt="Hipo Plus" width="773" height="533"></div>
+</main>
+
+<button type="button" id="tMusik" aria-label="Matikan atau nyalakan musik" hidden>
+  <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 13.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0-5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/></svg>
+</button>
+
+<script type="application/json" id="isi">{"pria":{"nama":"Firdian Zaki Putra Wibowo","ayah":"Mr. Wahyudi Satria Wibowo"},"wanita":{"nama":"Anita Nurul Syahrudin","ayah":"Mr. Iding Sahrudin"},"mulai":"2027-03-27T08:00","akad":"08.00 - 11.00 WIB","tempat":"Masjid Al Azhom","alamat":"Jl. Satria Sudirman, Kota Tangerang, Banten","peta":"https://www.google.com/maps/search/?api=1&query=Masjid+Raya+Al+Azhom+Tangerang","dressCode":"Rapi & Sopan","waMempelai":"6289523721519","rekening":[{"bank":"BNI","nomor":"0000000000","atasNama":"Anita Nurul Syahrudin"},{"bank":"GoPay","nomor":"089523721519","atasNama":"Firdian Zaki Putra Wibowo"}],"rundown":[{"jam":"08.00 WIB","acara":"Akad Nikah","ikon":"cincin","sisi":"kanan"},{"jam":"11.00 WIB","acara":"Acara Selesai","ikon":"mobil","sisi":"kiri"}]}</script>
+
+<script>
+const MUSIK="../assets/lagu.mp3", ZONA="+07:00";
+const ISI=JSON.parse(document.getElementById("isi").textContent);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const NS="http://www.w3.org/2000/svg";
+function acak(seed){ let a=seed>>>0||1; return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+/* ================= gambar (SVG buatan sendiri) ================= */
+/* awan cat air */
+(function(){
+  const s=`<svg xmlns='http://www.w3.org/2000/svg' width='520' height='520'><filter id='c' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='.0065 .011' numOctaves='5' seed='11' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  2.6 0 0 0 -1.25'/><feGaussianBlur stdDeviation='1.5'/></filter><rect width='100%' height='100%' filter='url(#c)'/></svg>`;
+  document.documentElement.style.setProperty("--awan",`url("data:image/svg+xml,${encodeURIComponent(s)}")`);
+})();
+
+/* kelopak daisy */
+(function(){
+  let k=""; const n=18;
+  for(let i=0;i<n;i++){ const a=i*360/n+(i%2?4:0), L=i%2?36:40;
+    k+=`<path d="M0 0C-6 -10 -6 -${L-8} 0 -${L} 6 -${L-8} 6 -10 0 0Z" fill="url(#gPetal)" stroke="#d9d5c5" stroke-width=".7" transform="rotate(${a})"/>`;
+    k+=`<path d="M0 -10V-${L-6}" stroke="#e1ddcf" stroke-width=".6" transform="rotate(${a})"/>`; }
+  $("kelopak").innerHTML=k;
+})();
+
+/* lapisan daisy: kartu (bunga besar di depan) & padang (banyak bunga kecil) */
+function lapisDaisy(jenis,seed){
+  const r=acak(seed); let g="";
+  if(jenis==="kartu"){
+    // tangkai & daun
+    const pos=[[40,250,58],[150,300,46],[255,250,40],[330,230,54],[90,190,40],[300,140,36],[20,120,30]];
+    for(const [x,y,s] of pos){ const tx=x+(r()-.5)*30;
+      g+=`<path d="M${x} ${y}Q${tx} ${y+80} ${x+(r()-.5)*20} 340" stroke="#7d9a6a" stroke-width="3" fill="none"/>`;
+      g+=`<path d="M${x+2} ${y+60}c18-14 34-12 40-2-16 6-28 8-40 2z" fill="#8fae7c" opacity=".85"/>`; }
+    for(const [x,y,s] of pos) g+=`<use href="#daisy" x="${x-s}" y="${y-s}" width="${s*2}" height="${s*2}" transform="rotate(${(r()-.5)*50} ${x} ${y})"/>`;
+    return `<svg viewBox="0 0 360 340" preserveAspectRatio="xMidYMax slice" xmlns="${NS}">${g}</svg>`;
+  }
+  // padang: rumput halus + daisy kecil
+  for(let i=0;i<90;i++){ const x=r()*400, y=40+r()*260, h=6+r()*12;
+    g+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)}l${((r()-.5)*4).toFixed(1)} -${h.toFixed(1)}" stroke="${r()>.5?"#6f9a4f":"#8db866"}" stroke-width="1.2"/>`; }
+  for(let i=0;i<34;i++){ const x=r()*400, y=30+r()*270, s=4+y/300*10;
+    g+=`<use href="#daisy" x="${(x-s).toFixed(1)}" y="${(y-s).toFixed(1)}" width="${(s*2).toFixed(1)}" height="${(s*2).toFixed(1)}"/>`; }
+  return `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice" xmlns="${NS}">${g}</svg>`;
+}
+document.querySelectorAll("[data-daisy]").forEach(el=>el.innerHTML=lapisDaisy(el.dataset.daisy,+el.dataset.seed));
+
+/* bukit rumput */
+document.querySelectorAll("[data-bukit]").forEach(el=>{
+  const v=+el.dataset.bukit, id="rumput"+v;
+  const top=v===1?"M0 70C120 30 260 20 400 60V300H0Z":"M0 120C90 60 220 20 400 0V300H0Z";
+  el.innerHTML=`<svg viewBox="0 0 400 300" preserveAspectRatio="none" xmlns="${NS}"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#b8cf7c"/><stop offset=".35" stop-color="#93b45c"/><stop offset="1" stop-color="#6e9443"/></linearGradient><filter id="${id}f"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="${v}"/><feColorMatrix values="0 0 0 0 .2  0 0 0 0 .35  0 0 0 0 .1  0 0 0 .5 0"/><feComposite in2="SourceGraphic" operator="in"/></filter></defs><path d="${top}" fill="url(#${id})"/><path d="${top}" fill="#000" filter="url(#${id}f)" opacity=".5"/></svg>`;
+});
+
+/* garis loop (pembatas berulir) */
+document.querySelectorAll("[data-loop]").forEach(el=>{
+  el.setAttribute("viewBox","0 0 480 30"); el.setAttribute("preserveAspectRatio","none");
+  let d="M-10 6"; for(let x=-10;x<490;x+=40) d+=`C${x+8} 30 ${x+30} 30 ${x+36} 8C${x+40} -2 ${x+30} -2 ${x+30} 6`;
+  el.innerHTML=`<path d="${d}" fill="none" stroke="${el.dataset.loop}" stroke-width="2.4" stroke-linecap="round"/>`;
+});
+
+/* bingkai bergelombang kuning */
+document.querySelectorAll("[data-gelombang]").forEach(el=>{
+  el.setAttribute("viewBox","0 0 300 366");
+  const W=300,H=366,m=14,amp=9; let d="";
+  const sisi=(x1,y1,x2,y2,n)=>{ for(let i=0;i<=n*8;i++){ const t=i/(n*8), x=x1+(x2-x1)*t, y=y1+(y2-y1)*t, s=Math.sin(t*n*Math.PI*2)*amp, nx=(y2-y1)/Math.hypot(x2-x1,y2-y1), ny=-(x2-x1)/Math.hypot(x2-x1,y2-y1); d+=`${d?"L":"M"}${(x+nx*s).toFixed(1)} ${(y+ny*s).toFixed(1)}`; } };
+  sisi(m,m,W-m,m,5); sisi(W-m,m,W-m,H-m,6); sisi(W-m,H-m,m,H-m,5); sisi(m,H-m,m,m,6);
+  el.innerHTML=`<path d="${d}Z" fill="none" stroke="#e2b862" stroke-width="3" stroke-linejoin="round"/>`;
+});
+
+/* sketsa garis putih dari ilustrasi Zaki & Anita */
+document.querySelectorAll("[data-sketsa]").forEach(el=>{
+  const w=el.dataset.sketsa==="wanita";
+  const vb=w?"440 300 360 1000":"290 280 320 1020";
+  const ids=w?["gWB","gWH","gBQ"]:["gM","gMH"];
+  const svg=document.createElementNS(NS,"svg"); svg.setAttribute("viewBox",vb);
+  ids.forEach(i=>{ const c=$(i).cloneNode(true); c.removeAttribute("id"); svg.appendChild(c); });
+  el.appendChild(svg);
+});
+
+/* coretan pita & ulir */
+document.querySelectorAll("[data-coret]").forEach(el=>{
+  el.innerHTML = el.dataset.coret==="pita"
+   ? `<svg viewBox="0 0 220 140"><path d="M20 60C8 46 14 26 30 30c16 4 6 26-6 22M30 40C70 30 110 20 150 26c20 3 30-10 22-16-8-6-18 4-10 12 8 8 26 6 34 0M24 52c-6 20-14 40-10 70M26 56c4 16 4 30 0 46-3 12-10 18-14 10" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>`
+   : `<svg viewBox="0 0 160 220"><path d="M140 10c-10 30-30 60-20 100 6 24 30 30 26 50-4 22-34 26-50 20M96 180c-12-6-30 2-28 14 2 14 24 10 22-4M120 190c10 4 22 0 26-8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+});
+
+/* sketsa masjid (garis abu) */
+(function(){
+  const st=`fill="#ecebe5" stroke="#5f625a" stroke-width="1.1"`, ln=`fill="none" stroke="#5f625a" stroke-width="1"`;
+  let s=`<path d="M10 140H330" ${ln}/><ellipse cx="170" cy="142" rx="70" ry="6" ${ln}/><path d="M150 140c4-8 8-12 20-12s16 4 20 12" ${ln}/>`;
+  s+=`<path d="M58 136V82h224v54z" ${st}/><path d="M50 82h240l-8-8H58z" ${st}/>`;
+  s+=`<path d="M112 74c0-44 116-44 116 0z" ${st}/><path d="M124 74c2-30 90-30 92 0" ${ln}/><path d="M170 34V18M164 26h12" ${ln}/><circle cx="170" cy="16" r="3" ${ln}/>`;
+  [[28],[312]].forEach(([x])=>{ s+=`<path d="M${x-8} 136V46h16v90z" ${st}/><path d="M${x-11} 64h22M${x-11} 96h22" ${ln}/><path d="M${x-8} 46c0-14 16-14 16 0z" ${st}/><path d="M${x} 32v-6" ${ln}/>`; for(let y=70;y<130;y+=14) s+=`<path d="M${x-3} ${y+8}v-5c0-4 6-4 6 0v5" ${ln}/>`; });
+  for(let i=0;i<7;i++){ const x=74+i*30; if(i===3) continue; s+=`<path d="M${x} 130v-26c0-11 16-11 16 0v26" ${ln}/><path d="M${x+8} 104v26" ${ln} opacity=".5"/>`; }
+  s+=`<path d="M152 136v-34c0-16 36-16 36 0v34" ${st}/><path d="M160 136v-28c0-9 20-9 20 0v28" ${ln}/>`;
+  s+=`<path d="M58 90h224M58 98h224" ${ln} opacity=".45"/>`;
+  [[4,40,"#7a7d74"],[328,30,"#7a7d74"]].forEach(([x,y])=>s+=`<path d="M${x} ${y}q2 6 8 8q-6 2-8 8q-2-6-8-8q6-2 8-8z" fill="#9a9c94"/>`);
+  $("masjid").innerHTML=s;
+})();
+
+/* kartu bergerigi untuk rangkaian acara */
+(function(){
+  const el=$("gerigi"), W=360, H=640; el.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const a=10, m=14; let d="";
+  const tepi=(x1,y1,x2,y2,n)=>{ for(let i=0;i<=n*10;i++){ const t=i/(n*10), x=x1+(x2-x1)*t, y=y1+(y2-y1)*t, s=Math.sin(t*n*Math.PI*2)*a, L=Math.hypot(x2-x1,y2-y1), nx=(y2-y1)/L, ny=-(x2-x1)/L; d+=`${d?"L":"M"}${(x+nx*s).toFixed(1)} ${(y+ny*s).toFixed(1)}`; } };
+  tepi(m,m,W-m,m,12); tepi(W-m,m,W-m,H-m,20); tepi(W-m,H-m,m,H-m,12); tepi(m,H-m,m,m,20);
+  el.innerHTML=`<path d="${d}Z" fill="#667055"/>`;
+})();
+
+/* ikon garis rangkaian acara */
+const IKON={
+  cincin:'<circle cx="26" cy="34" r="13"/><circle cx="40" cy="34" r="13"/><path d="M20 18h12l3-5H17zM26 13l-2-6M33 13l2-6M18 9l-3-3M37 9l3-3"/>',
+  mobil:'<path d="M8 40h48c2 0 3-2 2-4l-4-8c-1-2-3-3-5-3H34l-8-8H14c-3 0-5 2-5 5v14c0 2-1 4-1 4z"/><circle cx="18" cy="42" r="5"/><circle cx="46" cy="42" r="5"/><path d="M16 25h12M8 44l-6 4M4 50l-3 2"/><path d="M50 10c2-4 8-3 6 2l-4 4-4-4c-2-5 4-6 2-2z"/>',
+  kamera:'<rect x="6" y="18" width="52" height="32" rx="2"/><circle cx="32" cy="34" r="10"/><path d="M22 18l4-6h12l4 6M48 22h6"/>'
+};
+$("rundown").innerHTML='<div class="garis" style="grid-row:1/'+(ISI.rundown.length+1)+'"></div>'+ISI.rundown.map((b,i)=>{
+  const ikon=`<svg viewBox="0 0 64 56">${IKON[b.ikon]||IKON.cincin}</svg>`, teks=`<div><b>${esc(b.jam)}</b>${esc(b.acara)}</div>`;
+  return `<div class="butir ${b.sisi}" style="grid-row:${i+1}">${b.sisi==="kanan"?ikon+teks:teks+ikon}</div>`;
+}).join("");
+
+/* ================= isi dari data ================= */
+const nilai={"pria.nama":ISI.pria.nama,"pria.ayah":ISI.pria.ayah,"wanita.nama":ISI.wanita.nama,"wanita.ayah":ISI.wanita.ayah,akad:ISI.akad,tempat:ISI.tempat,alamat:ISI.alamat,dressCode:ISI.dressCode};
+document.querySelectorAll("[data-isi]").forEach(el=>{ if(nilai[el.dataset.isi]!=null) el.textContent=nilai[el.dataset.isi]; });
+$("peta").href=ISI.peta;
+$("tombolWa").href="https://wa.me/"+ISI.waMempelai;
+const ikonSalin='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>';
+const bingkaiTiket='<svg class="bingkai" viewBox="0 0 300 180" preserveAspectRatio="none"><path d="M14 4H286a10 10 0 0 0 10 10V166a10 10 0 0 0-10 10H14a10 10 0 0 0-10-10V14A10 10 0 0 0 14 4z" fill="none" stroke="#4b4b3f" stroke-width="1.4"/><path d="M18 10H282a8 8 0 0 0 8 8V162a8 8 0 0 0-8 8H18a8 8 0 0 0-8-8V18a8 8 0 0 0 8-8z" fill="none" stroke="#4b4b3f" stroke-width="1"/></svg>';
+$("rekening").innerHTML=ISI.rekening.map(r=>`<div class="tiket muncul">${bingkaiTiket}<div class="bank">${esc(r.bank)}</div><div class="no">${esc(r.nomor)}</div><div class="an">Account name:<br>${esc(r.atasNama)}</div><button type="button" class="salin" data-salin="${esc(r.nomor)}">${ikonSalin}<span>Copy</span></button></div>`).join("");
+$("rekening").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-salin]"); if(!b) return; const t=b.querySelector("span");
+  try{ await navigator.clipboard.writeText(b.dataset.salin); t.textContent="Copied"; }catch{ t.textContent=b.dataset.salin; }
+  setTimeout(()=>t.textContent="Copy",1800);
+});
+
+/* hitung mundur */
+const target=new Date(ISI.mulai+":00"+ZONA).getTime(), dua=n=>String(n).padStart(2,"0");
+function tick(){ const s=Math.max(0,(target-Date.now())/1000); $("hHari").textContent=Math.floor(s/86400); $("hJam").textContent=dua(Math.floor(s%86400/3600)); $("hMenit").textContent=dua(Math.floor(s%3600/60)); $("hDetik").textContent=dua(Math.floor(s%60)); }
+tick(); setInterval(tick,1000);
+
+/* nama tamu dari link: ...#Budi-Santoso */
+function bacaTamu(){
+  let h=""; try{ h=decodeURIComponent((location.hash||"").slice(1)); }catch{ h=(location.hash||"").slice(1); }
+  h=h.replace(/[-_.~+]+/g," ").replace(/\s+/g," ").trim();
+  $("namaTamu").textContent=h||"Tamu Undangan";
+  if(h && !$("rNama").value) $("rNama").value=h;
+}
+bacaTamu(); addEventListener("hashchange",bacaTamu);
+
+/* ================= RSVP (tabel Supabase yang sama) ================= */
+const SB_URL="https://nwyuhzbzkzmelorgfwla.supabase.co/rest/v1/ucapan_undangan";
+const SB_KEY="sb_publishable_X6VyZbMQkk3ILwkKP4vvTw_zcdXHcKH";
+const LABEL={hadir:"Hadir",tidak:"Tidak Hadir",ragu:"Masih Ragu"};
+let kehadiran="";
+document.querySelectorAll("[data-hadir]").forEach(b=>b.onclick=()=>{
+  kehadiran=b.dataset.hadir;
+  document.querySelectorAll("[data-hadir]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  $("formRsvp").hidden=false; ($("rNama").value?$("rPesan"):$("rNama")).focus({preventScroll:true});
+});
+async function muatUcapan(){
+  const box=$("ucapan");
+  try{
+    const r=await fetch(SB_URL+"?select=nama,kehadiran,pesan,dibuat&order=dibuat.desc&limit=500",{headers:{apikey:SB_KEY}});
+    if(!r.ok) throw 0; const data=await r.json();
+    box.innerHTML=data.length?data.map(u=>`<article><div class="av">${esc((u.nama||"?").trim().charAt(0).toUpperCase())}</div><div><b>${esc(u.nama)}</b><span>${esc(u.pesan||LABEL[u.kehadiran]||"")}</span></div></article>`).join(""):'<p class="kosong">Belum ada ucapan. Jadilah yang pertama.</p>';
+  }catch{ box.innerHTML='<p class="kosong">Ucapan belum bisa dimuat saat ini.</p>'; }
+}
+muatUcapan();
+$("formRsvp").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const nama=$("rNama").value.trim(), pesan=$("rPesan").value.trim();
+  if(!nama){ $("rNama").focus(); return; }
+  const t=e.target.querySelector("[type=submit]"); t.disabled=true; $("catatanRsvp").textContent="Mengirim…";
+  try{
+    const r=await fetch(SB_URL,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({nama,kehadiran:kehadiran||"hadir",pesan})});
+    if(!r.ok) throw 0;
+    $("rPesan").value=""; $("catatanRsvp").textContent="Terima kasih, ucapan Anda sudah terkirim."; muatUcapan();
+  }catch{
+    $("catatanRsvp").innerHTML=`Pengiriman langsung gagal. <a href="https://wa.me/${ISI.waMempelai}?text=${encodeURIComponent(`Assalamu'alaikum, saya ${nama}.\nKehadiran: ${LABEL[kehadiran]||"Hadir"}.\n\n${pesan}`)}" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>.`;
+  }
+  t.disabled=false;
+});
+
+/* ================= musik + pemutar ================= */
+const audio=new Audio(MUSIK); audio.loop=true; audio.preload="auto";
+const IKON_PUTAR='<path d="M8 5v14l11-7z"/>', IKON_JEDA='<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+function segarkan(){ const main=!audio.paused; $("ikonPutar").innerHTML=main?IKON_JEDA:IKON_PUTAR; $("tMusik").classList.toggle("main",main); }
+const putar=()=>audio.play().catch(()=>{});
+audio.addEventListener("play",segarkan); audio.addEventListener("pause",segarkan);
+audio.addEventListener("timeupdate",()=>{ if(audio.duration) $("titik").style.left=(audio.currentTime/audio.duration*100)+"%"; });
+$("pPutar").onclick=()=>audio.paused?putar():audio.pause();
+$("pMundur").onclick=$("pMaju").onclick=()=>{ audio.currentTime=0; putar(); };
+$("pUlang").onclick=()=>{ audio.loop=!audio.loop; $("pUlang").classList.toggle("redup",!audio.loop); };
+$("bar").onclick=e=>{ const b=e.currentTarget.getBoundingClientRect(); if(audio.duration){ audio.currentTime=(e.clientX-b.left)/b.width*audio.duration; putar(); } };
+$("tMusik").onclick=()=>audio.paused?putar():audio.pause();
+let jedaOtomatis=false;
+document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(!audio.paused){ audio.pause(); jedaOtomatis=true; } } else if(jedaOtomatis){ jedaOtomatis=false; putar(); } });
+
+/* ================= buka undangan ================= */
+if("scrollRestoration" in history) history.scrollRestoration="manual";
+scrollTo(0,0); document.body.style.overflow="hidden";
+$("bukaUndangan").onclick=()=>{
+  scrollTo(0,0);
+  $("sampul").classList.add("buka"); putar(); $("tMusik").hidden=false;
+  document.body.style.overflow="";
+  const io=new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add("terlihat"); io.unobserve(x.target); } }),{threshold:.12});
+  document.querySelectorAll(".muncul").forEach(el=>io.observe(el));
+  setTimeout(()=>$("sampul").hidden=true,1100);
+};
+</script>
+</body>
+</html>
