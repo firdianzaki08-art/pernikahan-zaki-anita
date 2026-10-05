@@ -39,8 +39,8 @@ button{font:inherit;font-weight:600;font-size:16px;padding:13px;border-radius:99
 </head>
 <body>
 <main>
-  <h1>Kartu Undangan per Tamu</h1>
-  <p class="ket">Ketik nama tamu, lalu bagikan kartunya ke WhatsApp bersama link undangan. Nama tamu juga otomatis tertulis di undangannya.</p>
+  <h1>Kartu Kabar Bahagia per Tamu</h1>
+  <p class="ket">Ketik nama penerima, lalu bagikan kartunya ke WhatsApp bersama teks pemberitahuan dan link undangan digital. Nama penerima otomatis tertulis di halamannya.</p>
   <label for="nama">Nama tamu</label>
   <input id="nama" autocomplete="off" placeholder="contoh: Budi Santoso">
   <canvas id="kartu" width="1080" height="1080" aria-label="Pratinjau kartu undangan"></canvas>
@@ -152,7 +152,7 @@ function gambarKartu(nama){
   const g=ctx.createLinearGradient(0,FH*.5,0,FH); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,.85)");
   ctx.fillStyle=g; ctx.fillRect(0,0,W,FH);
   ctx.textAlign="left"; ctx.fillStyle="#fff";
-  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("The Wedding Of",X,FH-100);
+  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("Wedding Announcement",X,FH-100);
   ctx.font="800 66px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,X,FH-32);
 
   ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#cfcfcf"; ctx.fillText("Dear",X,FH+70);
@@ -194,14 +194,16 @@ di Tempat
 
 Bismillahirrahmanirrahim
 
-Tanpa mengurangi rasa hormat, dengan penuh rasa syukur kepada Allah SWT, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu dalam acara pernikahan kami:
+Dengan penuh rasa syukur kepada Allah SWT, kami bermaksud menyampaikan kabar bahagia atas pernikahan kami:
 
 *FIRDIAN ZAKI PUTRA WIBOWO & ANITA NURUL SYAHRUDIN*
 
-Informasi lengkap dari acara bisa dikunjungi melalui link undangan di bawah ini:
-{LINK}
+yang Insya Allah akan dilangsungkan pada {TANGGAL}.
 
-Kehadiran dan doa restu dari Bapak/Ibu/Saudara/i merupakan kehormatan dan kebahagiaan bagi kami.
+Dikarenakan acara pernikahan kami dilaksanakan secara terbatas (intimate wedding), dengan segala kerendahan hati kami mohon maaf tidak dapat mengundang Bapak/Ibu/Saudara/i untuk hadir secara langsung.
+
+Tanpa mengurangi rasa hormat, kami memohon doa restu agar pernikahan kami senantiasa diberkahi Allah SWT. Kabar lengkap dan ucapan dapat disampaikan melalui link berikut:
+{LINK}
 
 Kami yang berbahagia,
 *ZAKI & ANITA*
@@ -212,17 +214,16 @@ Mohon maaf apabila ada salah dalam penulisan nama.`,
 Kepada Yth.
 *{NAMA}*
 
-Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud berbagi kabar bahagia. Insya Allah kami akan melangsungkan akad nikah pada:
+Alhamdulillah, dengan memohon rahmat dan ridha Allah SWT, kami ingin berbagi kabar bahagia. Insya Allah kami akan melangsungkan akad nikah pada:
 
 🗓 {TANGGAL}
-🕗 {JAM}
 📍 {TEMPAT}
 
-Kami mengundang Bapak/Ibu/Saudara/i untuk turut hadir dan mendoakan langkah baru kami. Detail acara, lokasi, dan ucapan dapat dibuka melalui undangan digital berikut:
+Pernikahan kami digelar secara sederhana bersama keluarga inti (intimate wedding), sehingga kami mohon maaf belum dapat mengundang Bapak/Ibu/Saudara/i secara langsung 🙏
+
+Doa dan restu dari Bapak/Ibu/Saudara/i sangat berarti bagi kami. Cerita kami dan kolom ucapan bisa dibuka di sini:
 
 👉 {LINK}
-
-Merupakan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir atau menitipkan doa restu.
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh
 
