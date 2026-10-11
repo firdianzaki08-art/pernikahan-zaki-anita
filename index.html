@@ -30,6 +30,8 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+/* dua versi isi: link biasa = pemberitahuan intimate wedding, link dengan ?hadir = mengundang hadir */
+html:not(.versi-undang) .v-undang,html.versi-undang .v-tahu{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--hitam);color:var(--putih);font-family:var(--f-sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
@@ -256,6 +258,7 @@ section{position:relative;padding-block:64px;padding-inline:var(--tepi)}
 #tMusik[aria-pressed="true"] .mati{display:inline}
 
 /* ===== editor (hanya pemilik) ===== */
+#tVersi{position:fixed;left:max(12px,calc(50% - 228px));top:calc(52px + env(safe-area-inset-top,0px));z-index:70;border:0;border-radius:999px;background:#fff;color:#111;font-family:var(--f-tebal);font-weight:700;font-size:12px;padding:8px 14px;box-shadow:0 3px 12px rgba(0,0,0,.5)}
 #tEdit{position:fixed;left:max(12px,calc(50% - 228px));top:calc(12px + env(safe-area-inset-top,0px));z-index:70;border:0;border-radius:999px;background:#f2c037;color:#111;font-family:var(--f-tebal);font-weight:700;font-size:12px;padding:8px 14px;box-shadow:0 3px 12px rgba(0,0,0,.5)}
 #panel{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:flex;justify-content:center;font-family:var(--f-tebal)}
 .pn{width:100%;max-width:520px;height:100%;background:var(--kertas);color:var(--tinta);display:flex;flex-direction:column}
@@ -354,7 +357,8 @@ section{position:relative;padding-block:64px;padding-inline:var(--tepi)}
 
   <!-- mempelai -->
   <section class="mp">
-    <div class="mp-undang muncul">WITH GRATITUDE TO ALLAH SWT<br>WE ANNOUNCE THE WEDDING OF</div>
+    <div class="mp-undang muncul v-tahu">WITH GRATITUDE TO ALLAH SWT<br>WE ANNOUNCE THE WEDDING OF</div>
+    <div class="mp-undang muncul v-undang">WITH GRATITUDE TO ALLAH SWT<br>WE CORDIALLY INVITE YOU TO THE WEDDING OF</div>
     <div class="mp-nama muncul" data-isi="pria.nama">Firdian Zaki Putra Wibowo</div>
     <div class="mp-ortu muncul" data-isi="pria.ortu">Son of Mr. Wahyudi Satria Wibowo</div>
     <div class="garis-v"></div>
@@ -382,7 +386,7 @@ section{position:relative;padding-block:64px;padding-inline:var(--tepi)}
       <h3 data-isi="tempat">Masjid Al Azhom</h3>
       <p>📍 <span data-isi="alamat">Jl. Satria Sudirman, Kota Tangerang, Banten</span></p>
     </div>
-    <a id="peta" href="#" hidden></a>
+    <a class="tombol-putih muncul v-undang" id="peta" href="#" target="_blank" rel="noopener">View Google Maps Here</a>
     <hr class="putus">
     <div class="hitung muncul" aria-label="Hitung mundur">
       <div><b id="hHari">0</b><span>Days</span></div>
@@ -390,7 +394,12 @@ section{position:relative;padding-block:64px;padding-inline:var(--tepi)}
       <div><b id="hMenit">0</b><span>Minutes</span></div>
       <div><b id="hDetik">0</b><span>Seconds</span></div>
     </div>
-    <div class="kotak-gelap dress muncul">
+    <div class="kotak-gelap dress muncul v-undang">
+      <h3>Doa Restu</h3>
+      <p>Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu kepada kami.</p>
+      <p>Atas kehadiran dan doa restunya, kami ucapkan terima kasih.</p>
+    </div>
+    <div class="kotak-gelap dress muncul v-tahu">
       <h3>Intimate Wedding</h3>
       <p>Dengan segala kerendahan hati, kami mohon maaf tidak dapat mengundang Bapak/Ibu/Saudara/i secara langsung, karena pernikahan kami dilangsungkan secara sederhana dan terbatas bersama keluarga inti.</p>
       <p>Tanpa mengurangi rasa hormat, kami memohon doa restu agar pernikahan kami senantiasa diberkahi Allah SWT.</p>
@@ -445,11 +454,18 @@ section{position:relative;padding-block:64px;padding-inline:var(--tepi)}
   <section class="rsvp">
     <div class="latar" data-latar="rsvp"></div>
     <h2 class="judul-serif muncul">Share Your Blessing</h2>
-    <p class="intro muncul">Although we can't invite you in person,<br>we would be grateful for your prayers and wishes.</p>
+    <p class="intro muncul v-tahu">Although we can't invite you in person,<br>we would be grateful for your prayers and wishes.</p>
+    <p class="intro muncul v-undang">Please let us know if you'll be able to celebrate with us.<br>We would also appreciate your wishes and blessings.</p>
     <form id="formRsvp" class="muncul">
       <label for="rNama">Name</label>
       <input id="rNama" required placeholder="Name" autocomplete="name" maxlength="80">
       <input type="hidden" id="rHadir" value="ragu">
+      <label for="rHadirPilih" class="v-undang">Attendance</label>
+      <select id="rHadirPilih" class="v-undang">
+        <option value="hadir">I'm planning to attend</option>
+        <option value="tidak">Sorry, I can't make it</option>
+        <option value="ragu">Not sure</option>
+      </select>
       <label for="rPesan">Message</label>
       <textarea id="rPesan" placeholder="Message" maxlength="600"></textarea>
       <div class="aksi">
@@ -469,7 +485,11 @@ section{position:relative;padding-block:64px;padding-inline:var(--tepi)}
       <i class="klip"><svg><use href="#klip"/></svg></i>
       <small>DEAR OUR FAMILY &amp; FRIENDS</small>
       <h2>Thank You</h2>
-      <div class="bingkai">
+      <div class="bingkai v-undang">
+        <p>for celebrating our wedding day with us. It will truly be the most wonderful day of our lives and it wouldn't be the same without you!</p>
+        <p>We are incredibly grateful for your love, prayers and presence on such a special occasion.</p>
+      </div>
+      <div class="bingkai v-tahu">
         <p>for your prayers and kind wishes. Although our wedding is held in an intimate setting, your love and blessings mean so much to us.</p>
         <p>Please keep us in your prayers as we begin this new chapter together.</p>
       </div>
@@ -491,6 +511,7 @@ section{position:relative;padding-block:64px;padding-inline:var(--tepi)}
 </button>
 
 <button type="button" id="tEdit" hidden>✎ Edit undangan</button>
+<button type="button" id="tVersi" hidden>Lihat versi: Pemberitahuan</button>
 <div id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="pnJudul">
   <div class="pn">
     <div class="pn-kepala"><h2 id="pnJudul">Edit isi undangan</h2><button type="button" class="tb garis" id="pnTutup">Tutup</button></div>
@@ -592,6 +613,12 @@ function render(d){
 }
 render(ISI);
 
+/* versi isi dari link: ?hadir = mengundang hadir, selain itu pemberitahuan */
+const MODE_UNDANG=new URLSearchParams(location.search).has("hadir");
+document.documentElement.classList.toggle("versi-undang",MODE_UNDANG);
+function labelVersi(){ $("tVersi").textContent="Lihat versi: "+(document.documentElement.classList.contains("versi-undang")?"Mengundang hadir":"Pemberitahuan"); }
+$("tVersi").onclick=()=>{ document.documentElement.classList.toggle("versi-undang"); labelVersi(); document.querySelectorAll(".muncul").forEach(el=>el.classList.add("terlihat")); };
+
 /* nama tamu dari link: ...#Budi-Santoso (dibaca ulang bila # berubah atau datang belakangan) */
 let tamuTerakhir=null;
 function bacaTamu(){
@@ -636,7 +663,7 @@ async function muatUcapan(){
 muatUcapan();
 $("formRsvp").addEventListener("submit", async e=>{
   e.preventDefault();
-  const nama=$("rNama").value.trim(), kehadiran=$("rHadir").value, pesan=$("rPesan").value.trim();
+  const nama=$("rNama").value.trim(), kehadiran=(document.documentElement.classList.contains("versi-undang")?$("rHadirPilih"):$("rHadir")).value, pesan=$("rPesan").value.trim();
   if(!nama){ $("rNama").focus(); return; }
   const tombol=e.target.querySelector('[type=submit]'); tombol.disabled=true;
   $("catatanRsvp").textContent="Sending…";
@@ -696,7 +723,7 @@ const SLOT_LATAR=[["sampul","Latar sampul"],["lokasi","Latar lokasi"],["rsvp","L
     const [a,u]=await Promise.all([window.claude.use("artifact"),window.claude.use("user")]);
     if(!a || !u) return;
     if(!(await u.canEdit())) return;
-    art=a; $("tEdit").hidden=false;
+    art=a; $("tEdit").hidden=false; $("tVersi").hidden=false; labelVersi();
   }catch{}
 })();
 

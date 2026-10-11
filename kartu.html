@@ -55,6 +55,8 @@ button{font:inherit;font-weight:600;font-size:16px;padding:13px;border-radius:99
     <input type="range" id="zoom" min="0" max="1" step="0.001">
     <button class="ketiga" id="resetFoto" type="button">Reset</button>
   </div>
+  <label for="jenis">Jenis undangan</label>
+  <select id="jenis"><option value="tahu">Pemberitahuan (intimate wedding)</option><option value="undang">Mengundang hadir</option></select>
   <label for="versi">Teks broadcast</label>
   <select id="versi"><option value="0">Versi 1 (formal)</option><option value="1">Versi 2 (hangat)</option></select>
   <textarea id="pesan" rows="9" aria-label="Isi pesan broadcast"></textarea>
@@ -104,7 +106,8 @@ async function siapkan(){
 
 /* nama tamu -> bagian link (#Budi-Santoso), sama aturannya dengan undangan */
 function slug(n){ return n.normalize("NFKC").replace(/[^\p{L}\p{N}\s-]/gu,"").trim().replace(/\s+/g,"-"); }
-function linkTamu(n){ const s=slug(n); return s? BASE+"#"+s : BASE; }
+const UNDANG=()=>$("jenis").value==="undang";
+function linkTamu(n){ const s=slug(n), b=BASE+(UNDANG()?"?hadir":""); return s? b+"#"+s : b; }
 
 function bungkus(ctx,teks,lebar){
   const kata=teks.split(/\s+/), baris=[]; let b="";
@@ -158,7 +161,7 @@ function gambarKartu(nama){
   const g=ctx.createLinearGradient(0,FH*.5,0,FH); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,.85)");
   ctx.fillStyle=g; ctx.fillRect(0,0,W,FH);
   ctx.textAlign="left"; ctx.fillStyle="#fff";
-  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText("Wedding Announcement",X,FH-100);
+  ctx.font="400 30px Jost, Arial, sans-serif"; ctx.fillText(UNDANG()?"Wedding Invitation":"Wedding Announcement",X,FH-100);
   ctx.font="800 66px Archivo, Arial, sans-serif"; ctx.fillText(D.pw,X,FH-32);
 
   ctx.font="400 28px Jost, Arial, sans-serif"; ctx.fillStyle="#cfcfcf"; ctx.fillText("Dear",X,FH+70);
@@ -192,7 +195,7 @@ function gambarOG(){
 
 const blob=()=>new Promise(r=>$("kartu").toBlob(r,"image/jpeg",.92));
 const namaFile=()=>"undangan-"+(slug($("nama").value)||"tamu").toLowerCase()+".jpg";
-const TEKS=[
+const TEKS_TAHU=[
 `Yth.
 Bapak/Ibu/Saudara/i
 *{NAMA}*
@@ -236,11 +239,55 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh
 Kami yang berbahagia,
 *Zaki & Anita*
 beserta keluarga`];
-const pesan=n=>TEKS[+$("versi").value].replace(/\{NAMA\}/g,n||"Bapak/Ibu/Saudara/i").replace(/\{LINK\}/g,linkTamu(n)).replace(/\{TANGGAL\}/g,D.tanggal).replace(/\{JAM\}/g,D.jam).replace(/\{TEMPAT\}/g,D.tempat+", "+(D.alamat.split(",").slice(-2,-1)[0]||"").trim());
+const TEKS_UNDANG=[
+`Yth.
+Bapak/Ibu/Saudara/i
+*{NAMA}*
+di Tempat
+
+Bismillahirrahmanirrahim
+
+Dengan memohon rahmat dan ridha Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri akad nikah kami:
+
+*FIRDIAN ZAKI PUTRA WIBOWO & ANITA NURUL SYAHRUDIN*
+
+🗓 {TANGGAL}
+⏰ {JAM}
+📍 {TEMPAT}
+
+Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu. Info lengkap, lokasi, dan konfirmasi kehadiran ada di link berikut:
+{LINK}
+
+Kami yang berbahagia,
+*ZAKI & ANITA*
+
+Mohon maaf apabila ada salah dalam penulisan nama.`,
+`Assalamu'alaikum Warahmatullahi Wabarakatuh
+
+Kepada Yth.
+*{NAMA}*
+
+Alhamdulillah, dengan memohon rahmat dan ridha Allah SWT, Insya Allah kami akan melangsungkan akad nikah pada:
+
+🗓 {TANGGAL}
+⏰ {JAM}
+📍 {TEMPAT}
+
+Kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan berbagi kebahagiaan bersama kami 🙏 Mohon konfirmasi kehadiran lewat link undangan berikut:
+
+👉 {LINK}
+
+Wassalamu'alaikum Warahmatullahi Wabarakatuh
+
+Kami yang berbahagia,
+*Zaki & Anita*
+beserta keluarga`];
+const pesan=n=>(UNDANG()?TEKS_UNDANG:TEKS_TAHU)[+$("versi").value].replace(/\{NAMA\}/g,n||"Bapak/Ibu/Saudara/i").replace(/\{LINK\}/g,linkTamu(n)).replace(/\{TANGGAL\}/g,D.tanggal).replace(/\{JAM\}/g,D.jam).replace(/\{TEMPAT\}/g,D.tempat+", "+(D.alamat.split(",").slice(-2,-1)[0]||"").trim());
 function info(t){ $("info").textContent=t; }
 let FILE=null, jedaFile;
 function perbarui(){ const n=$("nama").value.trim(); gambarKartu(n); FILE=null; clearTimeout(jedaFile); jedaFile=setTimeout(async()=>{ FILE=new File([await blob()],namaFile(),{type:"image/jpeg"}); },250); $("link").textContent=linkTamu(n); $("pesan").value=pesan(n); }
 $("versi").addEventListener("change",perbarui);
+$("jenis").addEventListener("change",perbarui);
 
 $("nama").addEventListener("input",perbarui);
 
