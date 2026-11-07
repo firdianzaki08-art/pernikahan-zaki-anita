@@ -1,0 +1,827 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Catatan Shift</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one-column phone app, time-clock card on top, bottom tab bar like a punch-card rack */
+:root{
+  --bg:#EEF1F4; --surface:#FFFFFF; --sunk:#E3E8ED; --line:#CDD5DD;
+  --ink:#16202B; --muted:#5A6878; --accent:#B46A00; --accent-ink:#FFFFFF; --accent-soft:#FBEFD9;
+  --ok:#1E7A4C; --ok-soft:#DDF2E6; --warn:#A65A00; --warn-soft:#FDEBD0; --bad:#B42318; --bad-soft:#FBE1DE;
+  --s1:#3B4BA8; --s2:#C27C0E; --s3:#127A78;
+  --display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F151C; --surface:#18212B; --sunk:#111920; --line:#2A3643;
+  --ink:#E7EDF3; --muted:#93A2B2; --accent:#F0A63A; --accent-ink:#1A1206; --accent-soft:#3A2A12;
+  --ok:#5BC98E; --ok-soft:#163327; --warn:#F2B35B; --warn-soft:#3A2A12; --bad:#FF8A7E; --bad-soft:#3D1C1A;
+  --s1:#8C98F0; --s2:#F0B44A; --s3:#4CC7C2; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151C; --surface:#18212B; --sunk:#111920; --line:#2A3643;
+  --ink:#E7EDF3; --muted:#93A2B2; --accent:#F0A63A; --accent-ink:#1A1206; --accent-soft:#3A2A12;
+  --ok:#5BC98E; --ok-soft:#163327; --warn:#F2B35B; --warn-soft:#3A2A12; --bad:#FF8A7E; --bad-soft:#3D1C1A;
+  --s1:#8C98F0; --s2:#F0B44A; --s3:#4CC7C2; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 calc(84px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding-block:16px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:1.6rem;font-weight:700}
+h2{font-size:1.25rem;font-weight:700}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.clock{font-family:var(--mono);font-size:1.1rem;font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.stack{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.between{justify-content:space-between}
+
+/* shift picker */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--sunk);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;color:var(--ink);border-radius:9px;padding:8px 4px;font:600 .95rem var(--display);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.seg button small{font:500 .72rem var(--mono);color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 3px rgb(0 0 0 / .15)}
+.seg button[aria-pressed="true"] .dot{opacity:1}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;opacity:.55}
+
+/* time-clock card */
+.card-clock{border-width:2px}
+.status{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-weight:600}
+.status.ok{background:var(--ok-soft);color:var(--ok)}
+.status.warn{background:var(--warn-soft);color:var(--warn)}
+.status.bad{background:var(--bad-soft);color:var(--bad)}
+.status.neutral{background:var(--sunk);color:var(--muted)}
+.punches{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.punch{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.punch .t{font:700 1.5rem var(--mono)}
+.punch .t.empty{color:var(--muted);font-weight:500}
+
+button{font-family:inherit}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:600;font-size:.95rem;cursor:pointer;min-height:44px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.big{padding:14px;font-size:1.05rem;width:100%;font-family:var(--display);letter-spacing:.02em}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--accent);padding:6px 8px;min-height:36px}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible,.seg button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.tab:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* running overtime */
+.running{background:var(--accent-soft);border-color:var(--accent)}
+.timer{font:700 2rem var(--mono);color:var(--accent)}
+
+/* forms */
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:.85rem;font-weight:600;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%;min-width:0}
+textarea{min-height:64px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:380px){.grid2{grid-template-columns:1fr}}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600;cursor:pointer;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* lists */
+.list{display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.date{display:flex;flex-direction:column;align-items:center;width:44px;line-height:1.1}
+.date b{font:700 1.15rem var(--mono)}
+.date span{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.item .main{min-width:0}
+.item .main p{overflow-wrap:anywhere}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:var(--sunk);color:var(--muted)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.acc{background:var(--accent-soft);color:var(--accent)}
+
+/* summary */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--sunk);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font:700 1.4rem var(--mono);overflow-wrap:anywhere}
+.notice{font-size:.85rem;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+.warnbox{font-size:.9rem;background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 12px}
+ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:8px}
+
+/* tab bar */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tab{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;font:600 .78rem var(--body);cursor:pointer;border-radius:10px;min-height:52px}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:30;max-width:calc(100% - 32px);text-align:center}
+.confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:8px 10px;font-size:.9rem;font-weight:600}
+@media (prefers-reduced-motion:no-preference){.tab,.btn,.chip{transition:background .15s,color .15s}}
+
+/* alarm */
+.alarm{position:fixed;inset:0;z-index:40;background:rgb(10 14 20 / .62);display:flex;align-items:flex-end;justify-content:center;
+  padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.alarm-card{background:var(--surface);color:var(--ink);border:3px solid var(--bad);border-radius:18px;padding:20px;width:100%;max-width:520px;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 40px rgb(0 0 0 / .35)}
+.alarm-card.warn{border-color:var(--accent)}
+.alarm-head{display:flex;align-items:center;gap:12px}
+.bell{width:48px;height:48px;flex:none;border-radius:50%;background:var(--bad-soft);color:var(--bad);display:grid;place-items:center}
+.alarm-card.warn .bell{background:var(--accent-soft);color:var(--accent)}
+.bell svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.alarm-card h2{font-size:1.5rem}
+.alarm-actions{display:flex;flex-direction:column;gap:8px}
+@media (prefers-reduced-motion:no-preference){.bell{animation:ring 1.2s ease-in-out infinite}
+  @keyframes ring{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(-14deg)}20%,40%{transform:rotate(14deg)}}}
+.soundbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:10px 12px;font-weight:600;font-size:.9rem}
+</style>
+
+<div class="wrap" id="app">
+  <header class="top">
+    <h1>Catatan Shift</h1>
+    <span class="clock" id="clock">--.--</span>
+  </header>
+
+  <!-- HARI INI -->
+  <section id="v-hari-ini" class="stack" data-view>
+    <div class="soundbar" id="soundbar" hidden><span>Suara alarm belum aktif</span><button class="btn primary" type="button" id="btnSound">Aktifkan suara</button></div>
+    <div class="panel">
+      <div class="label">Shift saya minggu ini</div>
+      <div class="seg" id="shiftSeg"></div>
+    </div>
+
+    <div class="panel card-clock" id="clockCard"></div>
+
+    <div class="panel" id="runningCard" hidden></div>
+
+    <div class="panel">
+      <div class="row between"><h3>Lembur</h3><span class="small muted">Catat begitu diperintah</span></div>
+      <button class="btn primary big" id="btnStartOT" type="button">Mulai lembur sekarang</button>
+      <button class="btn" id="btnAddOT" type="button">Catat lembur yang terlewat</button>
+    </div>
+
+    <div class="panel">
+      <div class="row between"><h3>7 hari terakhir</h3><span class="small muted">Tanggal = hari mulai shift</span></div>
+      <div class="list" id="history"></div>
+    </div>
+  </section>
+
+  <!-- LEMBUR -->
+  <section id="v-lembur" class="stack" data-view hidden>
+    <form class="panel" id="otForm" autocomplete="off">
+      <div class="row between"><h2 id="otFormTitle">Catat lembur</h2><button class="btn ghost" type="button" id="otCancel" hidden>Batal ubah</button></div>
+      <div class="field"><label>Alasan lembur</label>
+        <div class="chips" id="srcChips">
+          <button type="button" class="chip" data-v="perintah" aria-pressed="true">Diperintah atasan</button>
+          <button type="button" class="chip" data-v="duedate" aria-pressed="false">Selesaikan due date</button>
+        </div>
+      </div>
+      <div class="field"><label>Jenis hari</label>
+        <div class="chips" id="dayChips">
+          <button type="button" class="chip" data-v="kerja" aria-pressed="true">Hari kerja</button>
+          <button type="button" class="chip" data-v="libur" aria-pressed="false">Hari libur / istirahat</button>
+        </div>
+      </div>
+      <div class="field"><label for="otTanggal">Tanggal shift</label><input type="date" id="otTanggal" required></div>
+      <div class="grid2">
+        <div class="field"><label for="otMulai">Mulai</label><input type="datetime-local" id="otMulai" required></div>
+        <div class="field"><label for="otSelesai">Selesai (kosongkan jika masih jalan)</label><input type="datetime-local" id="otSelesai"></div>
+      </div>
+      <div class="chips" id="quickStart"></div>
+      <div class="field"><label for="otPemberi">Diperintah oleh</label><input id="otPemberi" list="pemberiList" placeholder="Nama atasan"><datalist id="pemberiList"></datalist></div>
+      <div class="field"><label for="otTugas">Pekerjaan</label><input id="otTugas" placeholder="Contoh: rekap muatan, laporan bulanan" required></div>
+      <div class="field"><label for="otCatatan">Catatan (opsional)</label><textarea id="otCatatan" placeholder="Bukti perintah: chat WA jam 13.40, dll."></textarea></div>
+      <p class="small muted" id="otPreview"></p>
+      <button class="btn primary big" type="submit" id="otSubmit">Simpan lembur</button>
+    </form>
+
+    <div class="panel">
+      <h3>Lembur terbaru</h3>
+      <div class="list" id="otRecent"></div>
+    </div>
+  </section>
+
+  <!-- REKAP -->
+  <section id="v-rekap" class="stack" data-view hidden>
+    <div class="panel">
+      <div class="row between">
+        <button class="btn" type="button" id="prevPeriod" aria-label="Periode sebelumnya">‹</button>
+        <div style="text-align:center;min-width:0"><div class="label">Periode</div><h2 id="periodLabel">-</h2></div>
+        <button class="btn" type="button" id="nextPeriod" aria-label="Periode berikutnya">›</button>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div id="limitWarn" class="stack"></div>
+      <div class="row">
+        <button class="btn primary" type="button" id="copyRekap">Salin untuk WhatsApp</button>
+        <button class="btn" type="button" id="dlCsv">Unduh CSV</button>
+      </div>
+      <textarea id="copyFallback" readonly hidden rows="8"></textarea>
+    </div>
+    <div class="panel">
+      <h3>Daftar lembur</h3>
+      <div class="list" id="periodList"></div>
+    </div>
+    <p class="notice" id="lawNote"></p>
+  </section>
+
+  <!-- ATUR -->
+  <section id="v-atur" class="stack" data-view hidden>
+    <form class="panel" id="setForm" autocomplete="off">
+      <h2>Upah &amp; aturan kerja</h2>
+      <p class="small muted">Isi supaya aplikasi bisa menghitung estimasi upah lembur. Kosongkan jika cukup jam saja.</p>
+      <div class="field"><label for="sPokok">Gaji pokok / bulan (Rp)</label><input id="sPokok" inputmode="numeric" placeholder="0"></div>
+      <div class="field"><label for="sTetap">Tunjangan tetap / bulan (Rp)</label><input id="sTetap" inputmode="numeric" placeholder="0"></div>
+      <div class="field"><label for="sTidakTetap">Tunjangan tidak tetap / bulan (Rp)</label><input id="sTidakTetap" inputmode="numeric" placeholder="0"><span class="small muted">Contoh: uang makan atau transport yang dibayar per kehadiran.</span></div>
+      <div class="grid2">
+        <div class="field"><label for="sHari">Sistem kerja</label>
+          <select id="sHari"><option value="6">6 hari kerja / minggu</option><option value="5">5 hari kerja / minggu</option></select></div>
+        <div class="field"><label for="sCutoff">Periode gaji mulai tanggal</label>
+          <select id="sCutoff"></select></div>
+      </div>
+      <p class="small" id="hourlyInfo"></p>
+      <button class="btn primary" type="submit">Simpan pengaturan</button>
+    </form>
+
+    <div class="panel">
+      <h3>Penyimpanan</h3>
+      <p class="small" id="storeInfo">Memeriksa…</p>
+    </div>
+
+    <div class="panel" id="nativePanel" hidden>
+      <h3>Alarm HP</h3>
+      <p class="small" id="nativeStatus"></p>
+      <button class="btn" type="button" id="btnPerm">Buka pengaturan izin</button>
+      <button class="btn" type="button" id="btnTestAlarm">Tes alarm (bunyi 10 detik lagi)</button>
+      <p class="small muted">Supaya alarm tidak dimatikan sistem: Pengaturan HP → Aplikasi → Catatan Shift → Baterai → pilih <b>Tidak dibatasi</b>.</p>
+    </div>
+
+    <div class="panel" data-web>
+      <h3>Pasang di layar utama</h3>
+      <ol class="steps small">
+        <li>Buka halaman ini di <b>Chrome</b> Android.</li>
+        <li>Ketuk menu <b>⋮</b> di kanan atas, pilih <b>Tambahkan ke layar utama</b>.</li>
+        <li>Beri nama "Catatan Shift". Ikonnya muncul seperti aplikasi biasa.</li>
+      </ol>
+    </div>
+
+    <div class="panel" data-web>
+      <h3>Pengingat otomatis (MacroDroid)</h3>
+      <p class="small muted">Aplikasi web tidak bisa membunyikan alarm sendiri. Pakai MacroDroid (gratis di Play Store) supaya HP yang mengingatkan.</p>
+      <details>
+        <summary>Pengingat saat tiba &amp; pulang kantor</summary>
+        <ol class="steps small">
+          <li>Tambah Makro, Pemicu: <b>Lokasi → Geofence</b>, pilih area kantor, saat <b>Masuk</b>.</li>
+          <li>Aksi: <b>Buka aplikasi</b> absen kantor, lalu <b>Notifikasi</b> "Absen masuk, lalu tandai di Catatan Shift".</li>
+          <li>Buat makro kedua dengan pemicu <b>Keluar</b> area kantor: notifikasi "Absen pulang. Ada lembur? Catat sekarang."</li>
+        </ol>
+      </details>
+      <details>
+        <summary>Cadangan alarm per shift</summary>
+        <ol class="steps small">
+          <li>Shift 1: alarm <span class="mono">22.10</span> &amp; <span class="mono">06.10</span></li>
+          <li>Shift 2: alarm <span class="mono">06.10</span> &amp; <span class="mono">14.10</span></li>
+          <li>Shift 3: alarm <span class="mono">14.10</span> &amp; <span class="mono">22.10</span></li>
+          <li>Beri label "SUDAH ABSEN?" dan aktifkan hanya untuk shift minggu itu.</li>
+        </ol>
+      </details>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs" aria-label="Menu">
+  <button class="tab" data-go="hari-ini"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Hari ini</button>
+  <button class="tab" data-go="lembur"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Lembur</button>
+  <button class="tab" data-go="rekap"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Rekap</button>
+  <button class="tab" data-go="atur"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 14H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9.7 4V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3z"/></svg>Atur</button>
+</nav>
+<div class="toast" id="toast" hidden></div>
+<div class="alarm" id="alarm" hidden role="alertdialog" aria-modal="true" aria-labelledby="alarmTitle">
+  <div class="alarm-card" id="alarmCard">
+    <div class="alarm-head"><div class="bell"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></div>
+      <div><div class="label" id="alarmLabel"></div><h2 id="alarmTitle"></h2></div></div>
+    <p id="alarmBody"></p>
+    <div class="alarm-actions" id="alarmActions"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+const SHIFTS = {
+  1:{name:"Shift 1", start:22, end:6,  color:"var(--s1)"},
+  2:{name:"Shift 2", start:6,  end:14, color:"var(--s2)"},
+  3:{name:"Shift 3", start:14, end:22, color:"var(--s3)"}
+};
+const HARI = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+const BULAN = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const LS = "catatan-shift-v1";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- state ---------- */
+let state = { settings:{shift:2, pokok:0, tetap:0, tidakTetap:0, hari:6, cutoff:1}, absen:{}, lembur:{} };
+let db = null, uid = null, profileRef = null, synced = false;
+try { const raw = localStorage.getItem(LS); if (raw) { const p = JSON.parse(raw); state = {...state, ...p, settings:{...state.settings, ...(p.settings||{})}}; } } catch(e) {}
+const NATIVE = !!window.Android;
+function cache(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e) {} syncNative(); }
+/* Android app: hand the next 7 days of reminders to the system alarm clock, so they ring even when the app is closed */
+function syncNative(){
+  if (!NATIVE) return;
+  try {
+    const now = Date.now(), s = state.settings.shift, sh = SHIFTS[s], list = [];
+    const base = parseYmd(currentInstance(s).date);
+    const run = Object.values(state.lembur).find(e => !e.selesai);
+    for (let off = 0; off < 7; off++) {
+      const date = ymd(addDays(base, off)), w = shiftWindow(date, s), rec = state.absen[date] || {};
+      if (rec.libur) continue;
+      const label = `${sh.name} ${hm(w.start)}–${hm(w.end)}`;
+      if (!rec.masuk) [-10, 0, 5, 10, 15, 20, 30, 45, 60].forEach(m => list.push({t:w.start.getTime() + m*6e4,
+        title: m < 0 ? "10 menit lagi masuk" : "BELUM ABSEN MASUK", body:`${label}. Absen di aplikasi kantor, lalu tandai di Catatan Shift.`}));
+      if (!rec.pulang && !(off === 0 && run)) [0, 5, 10, 15, 20, 30, 45, 60].forEach(m => list.push({t:w.end.getTime() + m*6e4,
+        title:"Jam kerja sudah lewat", body:`${label} selesai. Absen pulang. Kalau lembur, catat jam lemburnya sekarang.`}));
+    }
+    if (run) [4, 5, 6].forEach(h => list.push({t:new Date(run.mulai).getTime() + h*36e5, title:`Lembur sudah ${h} jam`, body:"Sudah selesai? Ketuk Selesai lembur, lalu absen pulang."}));
+    const out = list.filter(a => a.t > now + 5000).sort((a, b) => a.t - b.t).slice(0, 150);
+    window.Android.scheduleAlarms(JSON.stringify(out));
+  } catch(e) {}
+}
+
+/* ---------- date helpers ---------- */
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseYmd = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const hm = d => `${pad(d.getHours())}.${pad(d.getMinutes())}`;
+const toLocalInput = d => `${ymd(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const fmtDate = s => { const d = parseYmd(s); return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`; };
+const durTxt = mins => { mins = Math.max(0, Math.round(mins)); const h = Math.floor(mins/60), m = mins%60; return h ? (m ? `${h} j ${m} m` : `${h} jam`) : `${m} m`; };
+const rp = n => "Rp " + Math.round(n).toLocaleString("id-ID");
+
+function shiftWindow(dateStr, s){
+  const sh = SHIFTS[s]; const base = parseYmd(dateStr);
+  const start = new Date(base); start.setHours(sh.start, 0, 0, 0);
+  const end = new Date(base); if (sh.end <= sh.start) end.setDate(end.getDate()+1); end.setHours(sh.end, 0, 0, 0);
+  return {start, end};
+}
+/* the instance of the chosen shift that is relevant now: started within the last 16h or starts within 8h */
+function currentInstance(s, now = new Date()){
+  for (const off of [-1, 0, 1]) {
+    const date = ymd(addDays(now, off)); const w = shiftWindow(date, s);
+    const diff = (w.start - now) / 36e5;
+    if (diff > -16 && diff <= 8) return {date, ...w};
+  }
+  const date = ymd(now); return {date, ...shiftWindow(date, s)};
+}
+
+/* ---------- overtime pay (PP 35/2021 pasal 31-32) ---------- */
+function upahSejam(){
+  const {pokok=0, tetap=0, tidakTetap=0} = state.settings;
+  const total = pokok + tetap + tidakTetap;
+  if (!pokok) return 0;
+  let basis = pokok + tetap;
+  if (tidakTetap > 0 && basis < 0.75 * total) basis = 0.75 * total;
+  return basis / 173;
+}
+function tiers(jenis){
+  if (jenis === "kerja") return [[1,1.5],[Infinity,2]];
+  return state.settings.hari == 5 ? [[8,2],[9,3],[Infinity,4]] : [[7,2],[8,3],[Infinity,4]];
+}
+function faktor(hours, jenis){ // sum of multiplier * hours across tiers
+  let f = 0, prev = 0;
+  for (const [upTo, m] of tiers(jenis)) { const seg = Math.min(hours, upTo) - prev; if (seg > 0) f += seg*m; prev = upTo; if (hours <= upTo) break; }
+  return f;
+}
+const minsOf = e => e.selesai ? (new Date(e.selesai) - new Date(e.mulai)) / 6e4 : null;
+const payOf = e => { const m = minsOf(e); const u = upahSejam(); return (m && u) ? faktor(m/60, e.jenis) * u : 0; };
+
+/* ---------- persistence ---------- */
+function showToast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(showToast._t); showToast._t = setTimeout(() => t.hidden = true, 2600); }
+function writeErr(e){ showToast(e && e.code === "quota_exceeded" ? "Penyimpanan penuh. Hapus catatan lama." : "Tersimpan di HP ini, belum terkirim ke akun. Coba lagi nanti."); }
+async function saveSettings(){ cache(); render(); if (profileRef) profileRef.set({settings:state.settings}).catch(writeErr); }
+async function saveAbsen(date){ cache(); render(); if (profileRef) { const r = profileRef.collection("absen").doc(date); const v = state.absen[date]; (v ? r.set(v) : r.delete()).catch(writeErr); } }
+async function saveLembur(id){ cache(); render(); if (profileRef) { const r = profileRef.collection("lembur").doc(id); const v = state.lembur[id]; (v ? r.set(v) : r.delete()).catch(writeErr); } }
+
+async function connect(){
+  if (!window.claude?.use) { renderStore(); return; }
+  try {
+    const [d, u] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!d || !u) { renderStore(); return; }
+    const id = await u.id(); if (!id) { renderStore(); return; }
+    db = d; uid = id; profileRef = db.doc("data/users/" + uid + "/profile");
+    renderStore();
+    const local = JSON.parse(JSON.stringify(state));
+    let first = {p:true, a:true, l:true};
+    profileRef.onSnapshot(s => {
+      if (s.exists) { state.settings = {...state.settings, ...(s.data().settings||{})}; cache(); render(); }
+      else if (first.p && !s.metadata.fromCache) profileRef.set({settings:state.settings}).catch(()=>{});
+      if (!s.metadata.fromCache) first.p = false;
+    }, () => {});
+    const sub = (name, key) => profileRef.collection(name).limit(1000).onSnapshot(q => {
+      if (first[key] && !q.metadata.fromCache) {
+        first[key] = false; synced = true; renderStore();
+        // upload anything recorded on this phone before the account copy existed
+        const server = new Set(q.docs.map(x => x.id));
+        for (const [k, v] of Object.entries(local[name] || {})) if (!server.has(k)) profileRef.collection(name).doc(k).set(v).catch(()=>{});
+        const merged = {...(local[name]||{})}; q.docs.forEach(x => merged[x.id] = x.data()); state[name] = merged;
+      } else if (!first[key]) {
+        const next = {}; q.docs.forEach(x => next[x.id] = x.data()); state[name] = next;
+      } else return;
+      cache(); render();
+    }, () => { renderStore(); });
+    sub("absen", "a"); sub("lembur", "l");
+    setTimeout(() => { if (!synced) renderStore("slow"); }, 10000);
+  } catch(e) { renderStore(); }
+}
+function renderStore(flag){
+  const el = $("#storeInfo");
+  if (profileRef && synced) el.innerHTML = "<span class='tag ok'>Tersinkron</span> Data tersimpan di akun Claude Anda (privat, hanya Anda yang bisa melihat). Aman walau ganti HP.";
+  else if (profileRef && flag === "slow") el.innerHTML = "<span class='tag warn'>Offline</span> Belum terhubung ke akun. Catatan tetap disimpan di HP ini dan dikirim saat online.";
+  else if (profileRef) el.textContent = "Menghubungkan ke akun…";
+  else el.innerHTML = "<span class='tag warn'>Hanya di HP ini</span> Masuk ke akun Claude agar data ikut tersimpan di akun. Unduh CSV secara berkala sebagai cadangan.";
+}
+
+/* ---------- rendering: today ---------- */
+function renderShiftSeg(){
+  $("#shiftSeg").innerHTML = Object.entries(SHIFTS).map(([k, s]) =>
+    `<button type="button" data-s="${k}" aria-pressed="${state.settings.shift == k}"><span><span class="dot" style="background:${s.color}"></span> ${s.name}</span><small>${pad(s.start)}.00–${pad(s.end)}.00</small></button>`).join("");
+}
+function runningOT(){ return Object.entries(state.lembur).find(([, e]) => !e.selesai); }
+
+function renderClockCard(){
+  const now = new Date(); const s = state.settings.shift; const inst = currentInstance(s, now);
+  const rec = state.absen[inst.date] || {}; const sh = SHIFTS[s];
+  let cls, msg;
+  const minsTo = (inst.start - now)/6e4;
+  if (rec.libur) { cls = "neutral"; msg = "Ditandai libur"; }
+  else if (!rec.masuk) {
+    if (minsTo > 60) { cls = "neutral"; msg = `${sh.name} mulai ${hm(inst.start)} (${durTxt(minsTo)} lagi)`; }
+    else if (minsTo > 0) { cls = "warn"; msg = "Sebentar lagi masuk. Jangan lupa absen."; }
+    else { cls = "bad"; msg = `BELUM ABSEN MASUK · telat ${durTxt(-minsTo)}`; }
+  } else if (!rec.pulang) {
+    if (now < inst.end) { cls = "ok"; msg = `Sudah absen masuk. Pulang ${hm(inst.end)}.`; }
+    else { cls = runningOT() ? "warn" : "bad"; msg = runningOT() ? "Lembur berjalan. Absen pulang setelah selesai." : "WAKTUNYA ABSEN PULANG"; }
+  } else { cls = "ok"; msg = "Absen masuk & pulang lengkap"; }
+
+  const tIn = rec.masuk ? hm(new Date(rec.masuk)) : "--.--";
+  const tOut = rec.pulang ? hm(new Date(rec.pulang)) : "--.--";
+  $("#clockCard").style.borderColor = sh.color;
+  $("#clockCard").innerHTML = `
+    <div class="row between"><div><div class="label">${esc(fmtDate(inst.date))}</div><h2 style="color:${sh.color}">${sh.name} · ${hm(inst.start)}–${hm(inst.end)}</h2></div></div>
+    <div class="status ${cls}" role="status">${esc(msg)}</div>
+    <div class="punches">
+      <div class="punch"><span class="label">Masuk</span><span class="t ${rec.masuk?"":"empty"}">${tIn}</span>
+        ${rec.masuk ? `<input type="time" id="editIn" aria-label="Ubah jam masuk" value="${tIn.replace(".",":")}">` :
+          `<button class="btn primary" type="button" id="punchIn" ${rec.libur?"disabled":""}>Sudah absen masuk</button>`}</div>
+      <div class="punch"><span class="label">Pulang</span><span class="t ${rec.pulang?"":"empty"}">${tOut}</span>
+        ${rec.pulang ? `<input type="time" id="editOut" aria-label="Ubah jam pulang" value="${tOut.replace(".",":")}">` :
+          `<button class="btn ${rec.masuk?"primary":""}" type="button" id="punchOut" ${rec.libur||!rec.masuk?"disabled":""}>Sudah absen pulang</button>`}</div>
+    </div>
+    <div class="row between small">
+      <span class="muted">Tandai setelah absen di aplikasi kantor.</span>
+      <button class="btn ghost" type="button" id="toggleLibur">${rec.libur ? "Batalkan libur" : "Hari ini libur"}</button>
+    </div>`;
+  const setRec = patch => { state.absen[inst.date] = {tanggal:inst.date, shift:s, masuk:null, pulang:null, ...rec, ...patch}; if (!state.absen[inst.date].masuk && !state.absen[inst.date].pulang && !state.absen[inst.date].libur) delete state.absen[inst.date]; saveAbsen(inst.date); };
+  $("#punchIn")?.addEventListener("click", () => { setRec({masuk:new Date().toISOString(), libur:false}); showToast("Absen masuk tercatat " + hm(new Date())); });
+  $("#punchOut")?.addEventListener("click", () => { setRec({pulang:new Date().toISOString()}); showToast("Absen pulang tercatat " + hm(new Date())); });
+  $("#toggleLibur").addEventListener("click", () => setRec({libur:!rec.libur}));
+  const timeEdit = (el, key, ref) => el?.addEventListener("change", () => {
+    if (!el.value) return; const [h, m] = el.value.split(":").map(Number);
+    const d = new Date(ref); d.setHours(h, m, 0, 0);
+    // a time earlier than shift start - 6h on an overnight shift belongs to the next day
+    if (key === "pulang" && d < inst.start) d.setDate(d.getDate()+1);
+    if (key === "masuk" && SHIFTS[s].start >= 20 && h < 12) d.setDate(d.getDate()+1);
+    setRec({[key]: d.toISOString()}); showToast("Jam " + key + " diubah ke " + hm(d));
+  });
+  timeEdit($("#editIn"), "masuk", inst.start); timeEdit($("#editOut"), "pulang", inst.start);
+}
+
+function renderRunning(){
+  const r = runningOT(); const card = $("#runningCard");
+  $("#btnStartOT").hidden = !!r;
+  if (!r) { card.hidden = true; return; }
+  const [id, e] = r; card.hidden = false; card.classList.add("running");
+  const mins = (Date.now() - new Date(e.mulai)) / 6e4;
+  card.innerHTML = `
+    <div class="row between"><span class="label">Lembur berjalan sejak ${hm(new Date(e.mulai))}</span><span class="tag acc">${e.sumber==="duedate"?"Due date":"Perintah"}</span></div>
+    <div class="timer" id="otTimer">${durTxt(mins)}</div>
+    <p class="small">${esc(e.tugas)}${e.pemberi ? " · " + esc(e.pemberi) : ""}</p>
+    <button class="btn primary big" type="button" id="stopOT">Selesai lembur sekarang</button>`;
+  $("#stopOT").addEventListener("click", () => { state.lembur[id] = {...e, selesai:new Date().toISOString()}; saveLembur(id); showToast("Lembur tercatat " + durTxt(minsOf(state.lembur[id]))); });
+}
+
+function renderHistory(){
+  const s = state.settings.shift; const today = currentInstance(s).date; const rows = [];
+  for (let i = 0; i < 7; i++) {
+    const date = ymd(addDays(parseYmd(today), -i)); const r = state.absen[date]; const d = parseYmd(date);
+    const ots = Object.values(state.lembur).filter(e => e.tanggal === date && e.selesai);
+    const otMin = ots.reduce((a, e) => a + minsOf(e), 0);
+    let tag, txt;
+    if (r?.libur) { tag = "<span class='tag'>Libur</span>"; txt = ""; }
+    else if (r?.masuk && r?.pulang) { tag = "<span class='tag ok'>Lengkap</span>"; txt = `${hm(new Date(r.masuk))} – ${hm(new Date(r.pulang))}`; }
+    else if (r?.masuk) { tag = i === 0 ? "<span class='tag warn'>Berjalan</span>" : "<span class='tag bad'>Tanpa pulang</span>"; txt = `Masuk ${hm(new Date(r.masuk))}`; }
+    else { tag = i === 0 ? "<span class='tag'>Belum</span>" : "<span class='tag bad'>Tidak tercatat</span>"; txt = ""; }
+    rows.push(`<div class="item"><div class="date"><b>${d.getDate()}</b><span>${HARI[d.getDay()]}</span></div>
+      <div class="main"><p class="mono small">${txt}</p>${otMin ? `<p class="small muted">Lembur ${durTxt(otMin)}</p>` : ""}</div><div>${tag}</div></div>`);
+  }
+  $("#history").innerHTML = rows.join("");
+}
+
+/* ---------- lembur form ---------- */
+let editingId = null;
+const chipVal = sel => $(sel + " [aria-pressed='true']").dataset.v;
+const setChip = (sel, v) => document.querySelectorAll(sel + " .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.v === v));
+["#srcChips", "#dayChips"].forEach(sel => $(sel).addEventListener("click", e => { const c = e.target.closest(".chip"); if (c) { setChip(sel, c.dataset.v); updatePreview(); } }));
+
+function fillForm(e, id){
+  editingId = id || null;
+  const inst = currentInstance(state.settings.shift);
+  e = e || {tanggal:inst.date, mulai:new Date().toISOString(), selesai:null, sumber:"perintah", jenis:"kerja", pemberi:"", tugas:"", catatan:""};
+  $("#otTanggal").value = e.tanggal; $("#otMulai").value = toLocalInput(new Date(e.mulai));
+  $("#otSelesai").value = e.selesai ? toLocalInput(new Date(e.selesai)) : "";
+  setChip("#srcChips", e.sumber); setChip("#dayChips", e.jenis);
+  $("#otPemberi").value = e.pemberi || ""; $("#otTugas").value = e.tugas || ""; $("#otCatatan").value = e.catatan || "";
+  $("#otFormTitle").textContent = id ? "Ubah lembur" : "Catat lembur"; $("#otCancel").hidden = !id;
+  $("#otSubmit").textContent = id ? "Simpan perubahan" : "Simpan lembur";
+  const w = shiftWindow(e.tanggal, state.settings.shift);
+  $("#quickStart").innerHTML = `<button type="button" class="chip" data-t="${toLocalInput(w.end)}">Mulai dari jam pulang ${hm(w.end)}</button><button type="button" class="chip" data-t="now">Mulai sekarang</button>`;
+  updatePreview();
+}
+$("#quickStart").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; $("#otMulai").value = c.dataset.t === "now" ? toLocalInput(new Date()) : c.dataset.t; updatePreview(); });
+["#otMulai", "#otSelesai", "#otTanggal"].forEach(s => $(s).addEventListener("input", updatePreview));
+function updatePreview(){
+  const m = $("#otMulai").value, s = $("#otSelesai").value; const p = $("#otPreview");
+  if (!m || !s) { p.textContent = s ? "" : "Tanpa jam selesai, lembur tampil sebagai sedang berjalan di Hari ini."; return; }
+  const mins = (new Date(s) - new Date(m)) / 6e4;
+  if (mins <= 0) { p.textContent = "Jam selesai harus setelah jam mulai."; return; }
+  const u = upahSejam(); const pay = u ? " · estimasi " + rp(faktor(mins/60, chipVal("#dayChips")) * u) : "";
+  p.textContent = "Durasi " + durTxt(mins) + pay;
+}
+$("#otCancel").addEventListener("click", () => fillForm());
+$("#otForm").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const mulai = new Date($("#otMulai").value), selesaiV = $("#otSelesai").value;
+  const selesai = selesaiV ? new Date(selesaiV) : null;
+  if (selesai && selesai <= mulai) { showToast("Jam selesai harus setelah jam mulai."); return; }
+  if (!selesai && runningOT() && runningOT()[0] !== editingId) { showToast("Masih ada lembur berjalan. Selesaikan dulu."); return; }
+  const id = editingId || ("l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6));
+  state.lembur[id] = { tanggal:$("#otTanggal").value, mulai:mulai.toISOString(), selesai:selesai ? selesai.toISOString() : null,
+    sumber:chipVal("#srcChips"), jenis:chipVal("#dayChips"), pemberi:$("#otPemberi").value.trim(), tugas:$("#otTugas").value.trim(),
+    catatan:$("#otCatatan").value.trim(), dibuat:(state.lembur[id]?.dibuat) || new Date().toISOString() };
+  saveLembur(id); showToast(editingId ? "Perubahan disimpan" : (selesai ? "Lembur tersimpan" : "Lembur dimulai"));
+  fillForm(); location.hash = selesai ? "lembur" : "hari-ini";
+});
+
+function otItem(id, e, withPay){
+  const d = parseYmd(e.tanggal); const mins = minsOf(e);
+  const time = `${hm(new Date(e.mulai))}–${e.selesai ? hm(new Date(e.selesai)) : "…"}`;
+  const pay = withPay && payOf(e) ? `<p class="small mono">${rp(payOf(e))}</p>` : "";
+  return `<div class="item" data-id="${id}"><div class="date"><b>${d.getDate()}</b><span>${BULAN[d.getMonth()]}</span></div>
+    <div class="main"><p><b class="mono">${time}</b> <span class="muted small">${mins ? durTxt(mins) : "berjalan"}</span></p>
+      <p class="small">${esc(e.tugas)}${e.pemberi ? ` <span class="muted">· ${esc(e.pemberi)}</span>` : ""}</p>
+      <p class="row" style="gap:4px;margin-top:2px"><span class="tag ${e.sumber==="duedate"?"warn":"acc"}">${e.sumber==="duedate"?"Due date":"Perintah"}</span>${e.jenis==="libur"?"<span class='tag'>Hari libur</span>":""}</p>${pay}
+      <div class="confirm" hidden>Hapus catatan ini? <button class="btn danger" type="button" data-act="yes">Hapus</button><button class="btn" type="button" data-act="no">Batal</button></div></div>
+    <div class="stack" style="gap:2px"><button class="btn ghost" type="button" data-act="edit">Ubah</button><button class="btn ghost danger" type="button" data-act="del">Hapus</button></div></div>`;
+}
+function bindList(el){
+  el.addEventListener("click", ev => {
+    const b = ev.target.closest("[data-act]"); if (!b) return; const item = b.closest(".item"); const id = item.dataset.id;
+    if (b.dataset.act === "edit") { fillForm(state.lembur[id], id); location.hash = "lembur"; window.scrollTo(0, 0); }
+    if (b.dataset.act === "del") item.querySelector(".confirm").hidden = false;
+    if (b.dataset.act === "no") item.querySelector(".confirm").hidden = true;
+    if (b.dataset.act === "yes") { delete state.lembur[id]; saveLembur(id); showToast("Catatan dihapus"); }
+  });
+}
+bindList($("#otRecent")); bindList($("#periodList"));
+
+const sortedOT = () => Object.entries(state.lembur).sort((a, b) => b[1].mulai.localeCompare(a[1].mulai));
+function renderRecent(){
+  const list = sortedOT().slice(0, 8);
+  $("#otRecent").innerHTML = list.length ? list.map(([id, e]) => otItem(id, e, false)).join("") : "<p class='muted small'>Belum ada lembur. Ketuk <b>Mulai lembur sekarang</b> begitu atasan memberi perintah.</p>";
+  const names = [...new Set(Object.values(state.lembur).map(e => e.pemberi).filter(Boolean))];
+  $("#pemberiList").innerHTML = names.map(n => `<option value="${esc(n)}">`).join("");
+}
+
+/* ---------- rekap ---------- */
+let periodOffset = 0;
+function period(offset){
+  const c = Number(state.settings.cutoff) || 1; const now = new Date();
+  let y = now.getFullYear(), m = now.getMonth();
+  if (c > 1 && now.getDate() < c) m -= 1;
+  m += offset; const start = new Date(y, m, c); const end = new Date(y, m + 1, c - 1);
+  return {start:ymd(start), end:ymd(end), label: c === 1 ? `${BULAN[start.getMonth()]} ${start.getFullYear()}` : `${start.getDate()} ${BULAN[start.getMonth()]} – ${end.getDate()} ${BULAN[end.getMonth()]} ${end.getFullYear()}`};
+}
+function periodEntries(p){ return sortedOT().filter(([, e]) => e.selesai && e.tanggal >= p.start && e.tanggal <= p.end).reverse(); }
+function weekKey(s){ const d = parseYmd(s); const day = (d.getDay() + 6) % 7; return ymd(addDays(d, -day)); }
+function renderRekap(){
+  const p = period(periodOffset); const list = periodEntries(p);
+  $("#periodLabel").textContent = p.label;
+  const mins = list.reduce((a, [, e]) => a + minsOf(e), 0);
+  const pay = list.reduce((a, [, e]) => a + payOf(e), 0);
+  const perintah = list.filter(([, e]) => e.sumber !== "duedate").reduce((a, [, e]) => a + minsOf(e), 0);
+  const u = upahSejam();
+  $("#stats").innerHTML = `
+    <div class="stat"><span class="label">Total jam</span><b>${durTxt(mins)}</b></div>
+    <div class="stat"><span class="label">Catatan</span><b>${list.length}</b></div>
+    <div class="stat"><span class="label">Perintah / due date</span><b class="small">${durTxt(perintah)} / ${durTxt(mins - perintah)}</b></div>
+    <div class="stat"><span class="label">Estimasi upah</span><b class="${u?"":"small muted"}">${u ? rp(pay) : "Isi gaji di Atur"}</b></div>`;
+  // legal limit check: 4 h/day, 18 h/week (PP 35/2021 pasal 26)
+  const byDay = {}, byWeek = {};
+  list.forEach(([, e]) => { if (e.jenis === "kerja") byDay[e.tanggal] = (byDay[e.tanggal]||0) + minsOf(e); const w = weekKey(e.tanggal); byWeek[w] = (byWeek[w]||0) + minsOf(e); });
+  const warns = [];
+  Object.entries(byDay).forEach(([d, m]) => { if (m > 240) warns.push(`${fmtDate(d)}: ${durTxt(m)} (batas 4 jam/hari)`); });
+  Object.entries(byWeek).forEach(([w, m]) => { if (m > 1080) warns.push(`Minggu mulai ${fmtDate(w)}: ${durTxt(m)} (batas 18 jam/minggu)`); });
+  $("#limitWarn").innerHTML = warns.map(w => `<div class="warnbox">${esc(w)}</div>`).join("");
+  $("#periodList").innerHTML = list.length ? list.map(([id, e]) => otItem(id, e, true)).join("") : "<p class='muted small'>Tidak ada lembur selesai di periode ini.</p>";
+  $("#nextPeriod").disabled = periodOffset >= 0;
+  const basisNote = u ? `Upah sejam ${rp(u)} (upah sebulan ÷ 173).` : "Isi gaji di menu Atur untuk melihat estimasi rupiah.";
+  $("#lawNote").textContent = `Estimasi mengikuti PP 35/2021: hari kerja jam pertama 1,5× dan jam berikutnya 2× upah sejam; hari libur ${state.settings.hari == 5 ? "jam 1–8 2×, jam 9 3×, jam 10–11 4×" : "jam 1–7 2×, jam 8 3×, jam 9–10 4×"}. ${basisNote} Jika libur jatuh di hari kerja terpendek (sistem 6 hari), perusahaan menghitung berbeda. Aturan perusahaan (PKB) yang lebih baik tetap berlaku.`;
+}
+$("#prevPeriod").addEventListener("click", () => { periodOffset--; renderRekap(); });
+$("#nextPeriod").addEventListener("click", () => { if (periodOffset < 0) { periodOffset++; renderRekap(); } });
+
+function rekapText(){
+  const p = period(periodOffset); const list = periodEntries(p);
+  const mins = list.reduce((a, [, e]) => a + minsOf(e), 0);
+  const lines = [`*Rekap Lembur ${p.label}*`, ""];
+  list.forEach(([, e]) => { const d = parseYmd(e.tanggal);
+    lines.push(`• ${HARI[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth()+1)} · ${hm(new Date(e.mulai))}–${hm(new Date(e.selesai))} (${durTxt(minsOf(e))})${e.jenis==="libur"?" [hari libur]":""}`);
+    lines.push(`  ${e.tugas}${e.pemberi ? " · perintah " + e.pemberi : ""}${e.sumber==="duedate" ? " · selesaikan due date" : ""}`); });
+  lines.push("", `*Total: ${durTxt(mins)}* (${list.length} kali)`);
+  return lines.join("\n");
+}
+$("#copyRekap").addEventListener("click", () => {
+  const t = rekapText(); const fb = $("#copyFallback");
+  if (NATIVE) { window.Android.share(t); return; }
+  navigator.clipboard?.writeText(t).then(() => { fb.hidden = true; showToast("Rekap disalin. Tempel di WhatsApp."); })
+    .catch(() => { fb.value = t; fb.hidden = false; fb.select(); showToast("Salin manual teks di bawah"); })
+    ?? (fb.value = t, fb.hidden = false, fb.select());
+});
+$("#dlCsv").addEventListener("click", async () => {
+  const p = period(periodOffset); const q = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const rows = [["Tanggal","Mulai","Selesai","Durasi (jam)","Jenis hari","Alasan","Diperintah oleh","Pekerjaan","Catatan","Estimasi upah"].map(q).join(",")];
+  periodEntries(p).forEach(([, e]) => rows.push([e.tanggal, hm(new Date(e.mulai)), hm(new Date(e.selesai)), (minsOf(e)/60).toFixed(2).replace(".", ","), e.jenis, e.sumber==="duedate"?"Due date":"Perintah", e.pemberi, e.tugas, e.catatan, Math.round(payOf(e))].map(q).join(",")));
+  const csv = "﻿" + rows.join("\r\n");
+  if (NATIVE) { window.Android.shareFile(`lembur-${p.start}_${p.end}.csv`, csv); return; }
+  try {
+    const dl = await window.claude?.use?.("downloads");
+    if (!dl) throw 0;
+    await dl.save({filename:`lembur-${p.start}_${p.end}.csv`, data:new Blob([csv], {type:"text/csv"})});
+  } catch(e) {
+    if (e && e.code === "declined") return;
+    const fb = $("#copyFallback"); fb.value = csv; fb.hidden = false; fb.select(); showToast("Unduhan tidak tersedia. Salin teks CSV di bawah.");
+  }
+});
+
+/* ---------- settings ---------- */
+const numIn = el => Number(String(el.value).replace(/\D/g, "")) || 0;
+const fmtIn = n => n ? Number(n).toLocaleString("id-ID") : "";
+["#sPokok", "#sTetap", "#sTidakTetap"].forEach(s => $(s).addEventListener("input", e => { const n = numIn(e.target); e.target.value = fmtIn(n); }));
+$("#sCutoff").innerHTML = Array.from({length:28}, (_, i) => `<option value="${i+1}">${i === 0 ? "1 (sebulan penuh)" : (i+1) + " s/d " + i + " bulan berikutnya"}</option>`).join("");
+function fillSettings(){
+  const s = state.settings; $("#sPokok").value = fmtIn(s.pokok); $("#sTetap").value = fmtIn(s.tetap); $("#sTidakTetap").value = fmtIn(s.tidakTetap);
+  $("#sHari").value = String(s.hari); $("#sCutoff").value = String(s.cutoff);
+  const u = upahSejam();
+  $("#hourlyInfo").innerHTML = u ? `Upah sejam untuk lembur: <b class="mono">${rp(u)}</b>. Jam pertama hari kerja: <b class="mono">${rp(u*1.5)}</b>, jam berikutnya: <b class="mono">${rp(u*2)}</b>.` : "";
+}
+$("#setForm").addEventListener("submit", ev => { ev.preventDefault();
+  Object.assign(state.settings, {pokok:numIn($("#sPokok")), tetap:numIn($("#sTetap")), tidakTetap:numIn($("#sTidakTetap")), hari:Number($("#sHari").value), cutoff:Number($("#sCutoff").value)});
+  saveSettings(); fillSettings(); showToast("Pengaturan disimpan"); });
+
+$("#shiftSeg").addEventListener("click", e => { const b = e.target.closest("button[data-s]"); if (!b) return; state.settings.shift = Number(b.dataset.s); saveSettings(); });
+$("#btnStartOT").addEventListener("click", () => { fillForm(); location.hash = "lembur"; setTimeout(() => $("#otTugas").focus(), 50); });
+$("#btnAddOT").addEventListener("click", () => { fillForm(); const w = shiftWindow(currentInstance(state.settings.shift).date, state.settings.shift); $("#otMulai").value = toLocalInput(w.end); location.hash = "lembur"; updatePreview(); });
+
+/* ---------- routing ---------- */
+const VIEWS = ["hari-ini", "lembur", "rekap", "atur"];
+function route(){
+  const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "hari-ini";
+  document.querySelectorAll("[data-view]").forEach(s => s.hidden = s.id !== "v-" + v);
+  document.querySelectorAll(".tab").forEach(t => t.dataset.go === v ? t.setAttribute("aria-current", "page") : t.removeAttribute("aria-current"));
+  if (v === "atur") { fillSettings(); renderNative(); }
+  if (v === "rekap") renderRekap();
+}
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => { location.hash = t.dataset.go; window.scrollTo(0, 0); }));
+window.addEventListener("hashchange", route);
+
+function render(){
+  renderShiftSeg(); renderClockCard(); renderRunning(); renderHistory(); renderRecent();
+  if (location.hash === "#rekap") renderRekap();
+}
+/* ---------- alarm ---------- */
+let audioCtx = null, shownKey = null, lastRing = 0;
+let snooze = {}; try { snooze = JSON.parse(localStorage.getItem(LS + "-snooze") || "{}"); } catch(e) {}
+function snoozeFor(key, mins){ snooze[key] = Date.now() + mins*6e4; try { localStorage.setItem(LS + "-snooze", JSON.stringify(snooze)); } catch(e) {} shownKey = null; checkAlarm(true); }
+function unlockAudio(){
+  try { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state !== "running") audioCtx.resume(); } catch(e) {}
+  setTimeout(updateSoundbar, 50); keepAwake();
+}
+function updateSoundbar(){ $("#soundbar").hidden = NATIVE || !!(audioCtx && audioCtx.state === "running"); }
+function renderNative(){
+  if (!NATIVE) return;
+  document.querySelectorAll("[data-web]").forEach(el => el.hidden = true);
+  $("#nativePanel").hidden = false;
+  let st = {}; try { st = JSON.parse(window.Android.status()); } catch(e) {}
+  const ok = v => v ? "<span class='tag ok'>Aktif</span>" : "<span class='tag bad'>Mati</span>";
+  $("#nativeStatus").innerHTML = `${ok(st.notif)} Notifikasi &nbsp; ${ok(st.exact)} Alarm tepat waktu<br><span class="muted">${st.count ?? 0} alarm terjadwal untuk 7 hari ke depan.</span>`;
+}
+$("#btnPerm").addEventListener("click", () => { try { window.Android.openSettings(); } catch(e) {} });
+$("#btnTestAlarm").addEventListener("click", () => { try { window.Android.testAlarm(); showToast("Alarm tes bunyi 10 detik lagi. Kunci HP untuk mencoba."); } catch(e) {} });
+document.addEventListener("pointerdown", unlockAudio);
+$("#btnSound").addEventListener("click", () => { unlockAudio(); setTimeout(() => { ring(true); updateSoundbar(); }, 80); });
+function ring(force){
+  try { navigator.vibrate?.([500, 200, 500, 200, 500]); } catch(e) {}
+  if (!audioCtx || audioCtx.state !== "running") return;
+  const t0 = audioCtx.currentTime;
+  for (let i = 0; i < 6; i++) {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain(); const t = t0 + i*0.32;
+    o.type = "square"; o.frequency.value = i % 2 ? 660 : 880;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.26);
+    o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + 0.28);
+  }
+}
+function patchAbsen(date, shift, patch){
+  const rec = state.absen[date] || {};
+  state.absen[date] = {tanggal:date, shift, masuk:null, pulang:null, ...rec, ...patch};
+  saveAbsen(date);
+}
+function currentAlert(now){
+  const s = state.settings.shift, inst = currentInstance(s, now), rec = state.absen[inst.date] || {};
+  if (rec.libur) return null;
+  const live = k => !((snooze[k] || 0) > now.getTime());
+  const base = {inst, rec, s};
+  if (!rec.masuk && now >= inst.start - 10*6e4 && now < inst.end.getTime() + 2*36e5 && live(inst.date + ":masuk")) return {...base, key:inst.date + ":masuk", type:"masuk"};
+  if (rec.masuk && !rec.pulang && now >= inst.end && !runningOT() && live(inst.date + ":pulang")) return {...base, key:inst.date + ":pulang", type:"pulang"};
+  const hasOT = Object.values(state.lembur).some(e => e.tanggal === inst.date);
+  if (rec.pulang && !rec.lemburCek && !hasOT && now - new Date(rec.pulang) < 6*36e5 && live(inst.date + ":lembur")) return {...base, key:inst.date + ":lembur", type:"lembur"};
+  return null;
+}
+function openOTForm(inst, selesai){
+  fillForm({tanggal:inst.date, mulai:inst.end.toISOString(), selesai:selesai || null, sumber:"perintah", jenis:"kerja", pemberi:"", tugas:"", catatan:""});
+  location.hash = "lembur"; window.scrollTo(0, 0); setTimeout(() => $("#otTugas").focus(), 60);
+}
+function checkAlarm(force){
+  const now = new Date(); const a = currentAlert(now); const box = $("#alarm");
+  if (!a) { box.hidden = true; shownKey = null; document.title = "Catatan Shift"; return; }
+  const {inst, rec, s} = a; const sh = SHIFTS[s];
+  if (a.key !== shownKey || force) {
+    shownKey = a.key; const card = $("#alarmCard"); let label = `${sh.name} · ${hm(inst.start)}–${hm(inst.end)}`, title, body, acts;
+    const late = (now - inst.start) / 6e4, over = (now - inst.end) / 6e4;
+    if (a.type === "masuk") {
+      card.className = "alarm-card" + (late < 0 ? " warn" : "");
+      title = late < 0 ? "Sebentar lagi masuk" : "Belum absen masuk";
+      body = (late < 0 ? `Shift mulai ${hm(inst.start)}, ${durTxt(-late)} lagi.` : `Shift mulai ${hm(inst.start)}, sudah lewat ${durTxt(late)}.`) + " Buka aplikasi absen kantor, lalu tandai di sini.";
+      acts = [["primary big", "in", "Sudah absen masuk"], ["", "libur", "Hari ini saya libur"], ["ghost", "s5", "Ingatkan 5 menit lagi"]];
+    } else if (a.type === "pulang") {
+      card.className = "alarm-card";
+      title = "Jam kerja sudah lewat";
+      body = `Shift selesai ${hm(inst.end)}, lewat ${durTxt(over)}. Absen pulang di aplikasi kantor. Kalau masih bekerja, catat sebagai lembur.`;
+      acts = [["primary big", "out", "Sudah absen pulang"], ["", "ot", "Saya lembur, catat sekarang"], ["ghost", "s5", "Ingatkan 5 menit lagi"]];
+    } else {
+      card.className = "alarm-card warn";
+      const lateOut = (new Date(rec.pulang) - inst.end) / 6e4;
+      title = "Ada lembur hari ini?";
+      body = lateOut > 15 ? `Anda absen pulang ${hm(new Date(rec.pulang))}, ${durTxt(lateOut)} lewat jam shift. Catat sebagai lembur supaya dibayar.` : "Ada perintah lembur atau pekerjaan due date yang Anda selesaikan di shift ini?";
+      acts = [["primary big", "otdone", "Ya, catat lembur"], ["", "nolembur", "Tidak ada lembur"], ["ghost", "s30", "Tanya lagi 30 menit"]];
+    }
+    $("#alarmLabel").textContent = label; $("#alarmTitle").textContent = title; $("#alarmBody").textContent = body;
+    $("#alarmActions").innerHTML = acts.map(([c, act, t]) => `<button class="btn ${c}" type="button" data-alarm="${act}">${esc(t)}</button>`).join("");
+    $("#alarmActions").onclick = ev => {
+      const b = ev.target.closest("[data-alarm]"); if (!b) return; const act = b.dataset.alarm;
+      if (act === "in") { patchAbsen(inst.date, s, {masuk:new Date().toISOString(), libur:false}); showToast("Absen masuk tercatat " + hm(new Date())); }
+      if (act === "out") { patchAbsen(inst.date, s, {pulang:new Date().toISOString()}); showToast("Absen pulang tercatat " + hm(new Date())); }
+      if (act === "libur") patchAbsen(inst.date, s, {libur:true});
+      if (act === "ot") { snoozeFor(a.key, 15); openOTForm(inst, null); }
+      if (act === "otdone") { snoozeFor(a.key, 30); const p = new Date(rec.pulang); openOTForm(inst, p > inst.end ? p.toISOString() : null); }
+      if (act === "nolembur") { patchAbsen(inst.date, s, {lemburCek:true}); showToast("Oke, tidak ada lembur"); }
+      if (act === "s5") { snoozeFor(a.key, 5); showToast("Diingatkan lagi 5 menit"); }
+      if (act === "s30") { snoozeFor(a.key, 30); showToast("Ditanya lagi 30 menit"); }
+      shownKey = null; checkAlarm();
+    };
+    lastRing = 0;
+  }
+  box.hidden = false;
+  document.title = (now.getSeconds() % 2 ? "⚠ " : "") + $("#alarmTitle").textContent;
+  if (Date.now() - lastRing > 30000) { lastRing = Date.now(); ring(); }
+}
+
+function tick(){
+  const now = new Date(); $("#clock").textContent = hm(now) + "." + pad(now.getSeconds());
+  checkAlarm();
+  const r = runningOT(); if (r && $("#otTimer")) $("#otTimer").textContent = durTxt((now - new Date(r[1].mulai)) / 6e4);
+  if (now.getSeconds() === 0) renderClockCard();
+}
+fillForm(); render(); route(); updateSoundbar(); renderNative(); syncNative(); tick(); setInterval(tick, 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { render(); syncNative(); renderNative(); shownKey = null; lastRing = 0; checkAlarm(); } });
+let wake = null;
+async function keepAwake(){ try { if (!document.hidden && "wakeLock" in navigator && !wake) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => wake = null); } } catch(e) {} }
+document.addEventListener("visibilitychange", keepAwake);
+connect();
+})();
+</script>
+</body></html>
